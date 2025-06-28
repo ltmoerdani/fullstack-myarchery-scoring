@@ -1,0 +1,38 @@
+{
+  "name": "@repo/backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint . --max-warnings 0",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@fastify/cors": "^8.4.0",
+    "@fastify/helmet": "^11.1.1",
+    "@fastify/rate-limit": "^8.1.0",
+    "@fastify/websocket": "^8.3.1",
+    "@repo/shared-types": "*",
+    "dotenv": "^16.3.1",
+    "fastify": "^4.24.3",
+    "ioredis": "^5.3.2",
+    "nanoid": "^5.0.3",
+    "pino": "^8.16.1",
+    "pino-pretty": "^10.2.3",
+    "prettier": "^3.6.2",
+    "pusher": "^5.2.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@types/node": "^20.8.6",
+    "eslint": "^8.48.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.2.2"
+  }
+}
