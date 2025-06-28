@@ -4,11 +4,14 @@ import { CreateUserForm } from '@/components/CreateUserForm';
 import { RealtimeStatus } from '@/components/RealtimeStatus';
 import { WebSocketTest } from '@/components/WebSocketTest';
 import { LoginPage } from '@/components/LoginPage';
-import { User } from '@repo/shared-types';
+import { Toaster } from '@/components/ui/toaster';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { useUsers } from '@/hooks/useUsers';
 import { useRealtime } from '@/hooks/useRealtime';
 import { useWebSocket } from '@/hooks/useWebSocket';
-import { Users, Plus, Wifi, LogOut } from 'lucide-react';
+import { Users, Plus, LogOut, Target, Activity, Globe } from 'lucide-react';
 
 function App() {
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -19,18 +22,6 @@ function App() {
 
   // Listen for real-time user events
   useEffect(() => {
-    const handleUserCreated = (data: { data: User }) => {
-      refetch();
-    };
-
-    const handleUserUpdated = (data: { data: User }) => {
-      refetch();
-    };
-
-    const handleUserDeleted = (data: { data: { id: string } }) => {
-      refetch();
-    };
-
     // In a real app, you'd use Pusher event listeners here
     // For now, we'll just refetch on realtime connection changes
     if (isConnected) {
@@ -40,88 +31,108 @@ function App() {
 
   // Show login page if not logged in
   if (!isLoggedIn) {
-    return <LoginPage />;
+    return (
+      <>
+        <LoginPage onLogin={() => setIsLoggedIn(true)} />
+        <Toaster />
+      </>
+    );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-3">
-            <div className="p-3 bg-blue-600 rounded-xl">
-              <Users className="w-8 h-8 text-white" />
+          <div className="flex items-center space-x-4">
+            <div className="p-3 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl shadow-lg">
+              <Target className="w-8 h-8 text-white" />
             </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Modern Full-Stack App
+                MyArchery.id Dashboard
               </h1>
               <p className="text-gray-600">
-                Turborepo + Fastify + React + Redis + Pusher
+                Modern Full-Stack Application with Real-time Features
               </p>
             </div>
           </div>
           
           <div className="flex items-center space-x-4">
             <RealtimeStatus isConnected={isConnected} />
-            <button
+            <Button
+              variant="outline"
               onClick={() => setIsLoggedIn(false)}
-              className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors"
+              className="flex items-center space-x-2"
             >
               <LogOut className="w-4 h-4" />
               <span>Logout</span>
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setShowCreateForm(!showCreateForm)}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+              className="flex items-center space-x-2"
             >
               <Plus className="w-4 h-4" />
               <span>Add User</span>
-            </button>
+            </Button>
           </div>
         </div>
 
         {/* Status Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Users className="w-5 h-5 text-green-600" />
+          <Card className="border-0 shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-green-100 rounded-lg">
+                  <Users className="w-6 h-6 text-green-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Total Users</p>
+                  <p className="text-2xl font-bold text-foreground">{users.length}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Users</p>
-                <p className="text-2xl font-bold text-gray-900">{users.length}</p>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
           
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Wifi className="w-5 h-5 text-blue-600" />
+          <Card className="border-0 shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-blue-100 rounded-lg">
+                  <Activity className="w-6 h-6 text-blue-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Realtime Status</p>
+                  <div className="flex items-center space-x-2">
+                    <Badge
+                      variant={isConnected ? "default" : "destructive"}
+                    >
+                      {isConnected ? 'Connected' : 'Disconnected'}
+                    </Badge>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Realtime</p>
-                <p className="text-lg font-semibold text-gray-900">
-                  {isConnected ? 'Connected' : 'Disconnected'}
-                </p>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
           
-          <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Wifi className="w-5 h-5 text-purple-600" />
+          <Card className="border-0 shadow-md">
+            <CardContent className="p-6">
+              <div className="flex items-center space-x-3">
+                <div className="p-3 bg-purple-100 rounded-lg">
+                  <Globe className="w-6 h-6 text-purple-600" />
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">WebSocket</p>
+                  <div className="flex items-center space-x-2">
+                    <Badge
+                      variant={connectionStatus === 'connected' ? "default" : "outline"}
+                    >
+                      {connectionStatus}
+                    </Badge>
+                  </div>
+                </div>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">WebSocket</p>
-                <p className="text-lg font-semibold text-gray-900 capitalize">
-                  {connectionStatus}
-                </p>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Main Content */}
@@ -129,52 +140,45 @@ function App() {
           {/* User Management */}
           <div className="lg:col-span-2 space-y-6">
             {showCreateForm && (
-              <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                  Create New User
-                </h2>
-                <CreateUserForm
-                  onSubmit={(userData) => {
-                    createUser(userData);
-                    setShowCreateForm(false);
-                  }}
-                  onCancel={() => setShowCreateForm(false)}
-                />
-              </div>
+              <CreateUserForm
+                onSubmit={async (userData) => {
+                  await createUser(userData);
+                  setShowCreateForm(false);
+                }}
+                onCancel={() => setShowCreateForm(false)}
+              />
             )}
             
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200">
-              <div className="p-6 border-b border-gray-200">
-                <h2 className="text-xl font-semibold text-gray-900">Users</h2>
-                <p className="text-gray-600 mt-1">
-                  Manage your application users
-                </p>
-              </div>
-              <UserList
-                users={users}
-                loading={loading}
-                error={error}
-                onUpdate={updateUser}
-                onDelete={deleteUser}
-              />
-            </div>
+            <Card className="border-0 shadow-md">
+              <CardHeader className="border-b border-border/50">
+                <CardTitle className="flex items-center space-x-2">
+                  <Users className="h-5 w-5" />
+                  <span>User Management</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <UserList
+                  users={users}
+                  loading={loading}
+                  error={error}
+                  onUpdate={updateUser}
+                  onDelete={deleteUser}
+                />
+              </CardContent>
+            </Card>
           </div>
 
           {/* WebSocket Testing */}
           <div className="space-y-6">
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                WebSocket Test
-              </h2>
-              <WebSocketTest
-                connectionStatus={connectionStatus}
-                messages={messages}
-                onSendMessage={sendMessage}
-              />
-            </div>
+            <WebSocketTest
+              connectionStatus={connectionStatus}
+              messages={messages}
+              onSendMessage={sendMessage}
+            />
           </div>
         </div>
       </div>
+      <Toaster />
     </div>
   );
 }

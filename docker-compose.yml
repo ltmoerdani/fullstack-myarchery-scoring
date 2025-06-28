@@ -20,7 +20,7 @@ services:
     depends_on:
       - redis
     volumes:
-      - ./apps/backend:/app/apps/backend
+      - .:/app
     command: npm run dev
 
   frontend:
@@ -32,7 +32,7 @@ services:
     environment:
       - VITE_API_URL=http://backend:3001
     volumes:
-      - ./apps/frontend:/app/apps/frontend
+      - .:/app
     command: npm run dev
 
 volumes:

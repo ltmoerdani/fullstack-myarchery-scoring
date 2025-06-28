@@ -1,5 +1,12 @@
 import { useState } from 'react';
-import { Send, MessageCircle } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Send, MessageCircle, Wifi } from 'lucide-react';
+import { formatDateTime } from '@/lib/utils';
 
 interface WebSocketMessage {
   type: string;
@@ -13,7 +20,7 @@ interface WebSocketTestProps {
   onSendMessage: (message: string) => void;
 }
 
-export function WebSocketTest({ connectionStatus, messages, onSendMessage }: WebSocketTestProps) {
+export function WebSocketTest({ connectionStatus, messages, onSendMessage }: Readonly<WebSocketTestProps>) {
   const [messageText, setMessageText] = useState('');
 
   const handleSend = () => {
@@ -23,74 +30,105 @@ export function WebSocketTest({ connectionStatus, messages, onSendMessage }: Web
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
 
-  return (
-    <div className="space-y-4">
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Send Message
-        </label>
-        <div className="flex space-x-2">
-          <input
-            type="text"
-            value={messageText}
-            onChange={(e) => setMessageText(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Type your message..."
-            className="input-field flex-1"
-            disabled={connectionStatus !== 'connected'}
-          />
-          <button
-            onClick={handleSend}
-            disabled={connectionStatus !== 'connected' || !messageText.trim()}
-            className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Send className="w-4 h-4" />
-          </button>
-        </div>
-        <p className="text-xs text-gray-500">
-          Status: <span className="font-medium capitalize">{connectionStatus}</span>
-        </p>
-      </div>
+  const getStatusVariant = (status: string) => {
+    switch (status) {
+      case 'connected':
+        return 'default';
+      case 'connecting':
+        return 'secondary';
+      case 'error':
+        return 'destructive';
+      default:
+        return 'outline';
+    }
+  };
 
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Messages ({messages.length})
-        </label>
-        <div className="bg-gray-50 rounded-lg border border-gray-200 h-48 overflow-y-auto p-3 space-y-2">
-          {messages.length === 0 ? (
-            <div className="flex items-center justify-center h-full text-gray-500">
-              <div className="text-center">
-                <MessageCircle className="w-8 h-8 mx-auto mb-2" />
-                <p className="text-sm">No messages yet</p>
-              </div>
-            </div>
-          ) : (
-            messages.map((message, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-md p-2 border border-gray-100 text-sm"
-              >
-                <div className="flex justify-between items-start mb-1">
-                  <span className="font-medium text-blue-600">{message.type}</span>
-                  <span className="text-xs text-gray-500">
-                    {new Date(message.timestamp).toLocaleTimeString()}
-                  </span>
-                </div>
-                <pre className="text-xs text-gray-700 whitespace-pre-wrap">
-                  {JSON.stringify(message.payload, null, 2)}
-                </pre>
-              </div>
-            ))
-          )}
+  return (
+    <Card>
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <MessageCircle className="h-5 w-5" />
+            <span>WebSocket Test</span>
+          </div>
+          <Badge variant={getStatusVariant(connectionStatus)} className="flex items-center space-x-1">
+            <Wifi className="h-3 w-3" />
+            <span className="capitalize">{connectionStatus}</span>
+          </Badge>
+        </CardTitle>
+      </CardHeader>
+      
+      <CardContent className="space-y-4">
+        {/* Send Message */}
+        <div className="space-y-2">
+          <Label htmlFor="message" className="text-sm font-medium">
+            Send Message
+          </Label>
+          <div className="flex space-x-2">
+            <Input
+              id="message"
+              value={messageText}
+              onChange={(e) => setMessageText(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Type your message..."
+              disabled={connectionStatus !== 'connected'}
+            />
+            <Button
+              onClick={handleSend}
+              disabled={connectionStatus !== 'connected' || !messageText.trim()}
+              size="icon"
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+
+        {/* Messages */}
+        <div className="space-y-2">
+          <Label className="text-sm font-medium">
+            Messages ({messages.length})
+          </Label>
+          <Card className="bg-muted/30">
+            <ScrollArea className="h-48 p-3">
+              {messages.length === 0 ? (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  <div className="text-center">
+                    <MessageCircle className="w-8 h-8 mx-auto mb-2" />
+                    <p className="text-sm">No messages yet</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {messages.map((message) => (
+                    <Card key={message.timestamp + '-' + message.type} className="bg-background">
+                      <CardContent className="p-3">
+                        <div className="flex justify-between items-start mb-2">
+                          <Badge variant="outline" className="text-xs">
+                            {message.type}
+                          </Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {formatDateTime(message.timestamp)}
+                          </span>
+                        </div>
+                        <pre className="text-xs text-foreground whitespace-pre-wrap font-mono bg-muted/50 p-2 rounded">
+                          {JSON.stringify(message.payload, null, 2)}
+                        </pre>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </ScrollArea>
+          </Card>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

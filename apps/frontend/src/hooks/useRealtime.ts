@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import Pusher from 'pusher-js';
 
-const PUSHER_KEY = import.meta.env.VITE_PUSHER_KEY;
-const PUSHER_CLUSTER = import.meta.env.VITE_PUSHER_CLUSTER;
+const PUSHER_KEY = (import.meta as any).env?.VITE_PUSHER_KEY;
+const PUSHER_CLUSTER = (import.meta as any).env?.VITE_PUSHER_CLUSTER;
 
 export function useRealtime() {
   const [isConnected, setIsConnected] = useState(false);
@@ -16,7 +16,6 @@ export function useRealtime() {
 
     const pusherInstance = new Pusher(PUSHER_KEY, {
       cluster: PUSHER_CLUSTER,
-      encrypted: true,
     });
 
     pusherInstance.connection.bind('connected', () => {

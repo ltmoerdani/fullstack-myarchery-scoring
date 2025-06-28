@@ -1,114 +1,236 @@
 import { useState } from 'react';
-import { Lock } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useToast } from '@/components/ui/use-toast';
+import { Lock, Mail, Eye, EyeOff, Loader2, Target } from 'lucide-react';
 
-export function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  rememberMe: z.boolean().default(false),
+});
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt:', { email, password, rememberMe });
+type LoginFormData = z.infer<typeof loginSchema>;
+
+interface LoginPageProps {
+  readonly onLogin: () => void;
+}
+
+export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setError,
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      rememberMe: false,
+    },
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
+    setIsLoading(true);
+    
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Mock validation - replace with actual authentication logic
+      if (data.email === 'admin@myarchery.id' && data.password === 'password123') {
+        toast({
+          title: "Login Successful",
+          description: "Welcome back to MyArchery.id!",
+        });
+        onLogin?.();
+      } else {
+        setError('root', {
+          message: 'Invalid email or password. Please try again.',
+        });
+        toast({
+          variant: "destructive",
+          title: "Login Failed",
+          description: "Invalid credentials. Please check your email and password.",
+        });
+      }
+    } catch (error) {
+      setError('root', {
+        message: 'An error occurred during login. Please try again.',
+      });
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: (error instanceof Error ? error.message : String(error)),
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center p-4">
+      <div className="w-full max-w-md space-y-6">
         {/* Header */}
-        <div className="bg-blue-600 text-white text-center py-6 px-6 rounded-t-lg">
-          <h1 className="text-lg font-medium">Masuk MyArchery.id</h1>
+        <div className="text-center space-y-2">
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg">
+            <Target className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
+          <p className="text-gray-600">Sign in to your MyArchery.id account</p>
         </div>
 
-        {/* Form Container */}
-        <div className="bg-white rounded-b-lg shadow-sm border border-gray-200 p-8">
-          {/* Logo */}
-          <div className="flex justify-center mb-8">
-            <div className="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center border border-gray-200">
-              <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center">
-                <div className="w-4 h-4 bg-white rounded-full"></div>
+        {/* Login Card */}
+        <Card className="shadow-xl border-0">
+          <CardHeader className="space-y-1 pb-4">
+            <CardTitle className="text-xl text-center">Sign In</CardTitle>
+            <CardDescription className="text-center">
+              Enter your credentials to access your account
+            </CardDescription>
+          </CardHeader>
+          
+          <CardContent className="space-y-4">
+            {/* Error Alert */}
+            {errors.root && (
+              <Alert variant="destructive">
+                <AlertDescription>{errors.root.message}</AlertDescription>
+              </Alert>
+            )}
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Email Field */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm font-medium">
+                  Email Address
+                </Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    className={`pl-10 ${errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                    {...register('email')}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.email && (
+                  <p className="text-sm text-destructive">{errors.email.message}</p>
+                )}
               </div>
-            </div>
-          </div>
 
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter email"
-                className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                required
-              />
-            </div>
+              {/* Password Field */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm font-medium">
+                  Password
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                  <Input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Enter your password"
+                    className={`pl-10 pr-10 ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                    {...register('password')}
+                    disabled={isLoading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                    disabled={isLoading}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-sm text-destructive">{errors.password.message}</p>
+                )}
+              </div>
 
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter Password"
-                className="w-full px-3 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm"
-                required
-              />
-            </div>
+              {/* Remember Me */}
+              <div className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id="rememberMe"
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  {...register('rememberMe')}
+                  disabled={isLoading}
+                />
+                <Label htmlFor="rememberMe" className="text-sm text-gray-700">
+                  Remember me for 30 days
+                </Label>
+              </div>
 
-            {/* Remember Me Checkbox */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
-                Remember me
-              </label>
-            </div>
-
-            {/* Login Button */}
-            <button
-              type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition-colors duration-200 text-sm"
-            >
-              Masuk
-            </button>
-
-            {/* Forgot Password Link */}
-            <div className="text-center">
-              <button
-                type="button"
-                className="text-sm text-gray-500 hover:text-gray-700 flex items-center justify-center space-x-1"
+              {/* Login Button */}
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
               >
-                <Lock className="w-4 h-4" />
-                <span>Forgot your password?</span>
-              </button>
-            </div>
-          </form>
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Signing in...
+                  </>
+                ) : (
+                  'Sign In'
+                )}
+              </Button>
 
-          {/* Sign Up Link */}
-          <div className="mt-8 text-center">
-            <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
-              <button className="text-blue-600 hover:text-blue-700 font-medium">
-                Signup now
-              </button>
-            </p>
-          </div>
+              {/* Forgot Password */}
+              <div className="text-center">
+                <Button
+                  type="button"
+                  variant="link"
+                  className="text-sm text-muted-foreground hover:text-primary p-0"
+                  disabled={isLoading}
+                >
+                  Forgot your password?
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
+        {/* Sign Up Link */}
+        <div className="text-center">
+          <p className="text-sm text-gray-600">
+            Don't have an account?{' '}
+            <Button
+              variant="link"
+              className="text-primary hover:text-primary/80 p-0 h-auto font-medium"
+            >
+              Create account
+            </Button>
+          </p>
         </div>
+
+        {/* Demo Credentials */}
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="pt-4">
+            <div className="text-center space-y-1">
+              <p className="text-xs font-medium text-blue-800">Demo Credentials</p>
+              <p className="text-xs text-blue-600">Email: admin@myarchery.id</p>
+              <p className="text-xs text-blue-600">Password: password123</p>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

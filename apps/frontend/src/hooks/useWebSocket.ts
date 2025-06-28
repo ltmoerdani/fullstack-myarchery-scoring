@@ -8,7 +8,7 @@ interface WebSocketMessage {
 
 type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
-const WS_URL = import.meta.env.VITE_API_URL?.replace('http', 'ws') || 'ws://localhost:3001';
+const WS_URL = (import.meta as any).env?.VITE_API_URL?.replace('http', 'ws') ?? 'ws://localhost:3001';
 
 export function useWebSocket() {
   const [connectionStatus, setConnectionStatus] = useState<ConnectionStatus>('disconnected');
@@ -105,4 +105,12 @@ export function useWebSocket() {
     connect,
     disconnect,
   };
+}
+
+// @ts-ignore: digunakan untuk deklarasi env Vite
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface ImportMetaEnv {
+  readonly VITE_API_URL?: string;
+  readonly VITE_PUSHER_KEY?: string;
+  readonly VITE_PUSHER_CLUSTER?: string;
 }

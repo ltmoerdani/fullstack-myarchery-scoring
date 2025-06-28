@@ -1,25 +1,26 @@
+import { Badge } from '@/components/ui/badge';
 import { Wifi, WifiOff } from 'lucide-react';
 
 interface RealtimeStatusProps {
   isConnected: boolean;
 }
 
-export function RealtimeStatus({ isConnected }: RealtimeStatusProps) {
+export function RealtimeStatus({ isConnected }: Readonly<RealtimeStatusProps>) {
   return (
-    <div className="flex items-center space-x-2">
+    <Badge className={`flex items-center space-x-2 ${isConnected ? 'bg-primary text-primary-foreground' : 'bg-destructive text-destructive-foreground'}`}>
       {isConnected ? (
         <>
-          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <Wifi className="w-5 h-5 text-green-600" />
-          <span className="text-sm font-medium text-green-600">Connected</span>
+          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+          <Wifi className="w-4 h-4" />
+          <span>Connected</span>
         </>
       ) : (
         <>
-          <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-          <WifiOff className="w-5 h-5 text-red-600" />
-          <span className="text-sm font-medium text-red-600">Disconnected</span>
+          <div className="w-2 h-2 bg-red-400 rounded-full" />
+          <WifiOff className="w-4 h-4" />
+          <span>Disconnected</span>
         </>
       )}
-    </div>
+    </Badge>
   );
 }

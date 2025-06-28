@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { User, CreateUser, UpdateUser, ApiResponse } from '@repo/shared-types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = (import.meta as any).env?.VITE_API_URL ?? 'http://localhost:3001';
 
 export function useUsers() {
   const [users, setUsers] = useState<User[]>([]);
@@ -24,7 +24,7 @@ export function useUsers() {
       if (result.success && result.data) {
         setUsers(result.data);
       } else {
-        throw new Error(result.error?.message || 'Failed to fetch users');
+        throw new Error(result.error?.message ?? 'Failed to fetch users');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
@@ -54,7 +54,7 @@ export function useUsers() {
       if (result.success && result.data) {
         setUsers(prev => [...prev, result.data!]);
       } else {
-        throw new Error(result.error?.message || 'Failed to create user');
+        throw new Error(result.error?.message ?? 'Failed to create user');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
@@ -84,7 +84,7 @@ export function useUsers() {
           user.id === id ? result.data! : user
         ));
       } else {
-        throw new Error(result.error?.message || 'Failed to update user');
+        throw new Error(result.error?.message ?? 'Failed to update user');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
@@ -124,4 +124,12 @@ export function useUsers() {
     deleteUser,
     refetch: fetchUsers,
   };
+}
+
+// @ts-ignore: digunakan untuk deklarasi env Vite
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+interface ImportMetaEnv {
+  readonly VITE_API_URL?: string;
+  readonly VITE_PUSHER_KEY?: string;
+  readonly VITE_PUSHER_CLUSTER?: string;
 }

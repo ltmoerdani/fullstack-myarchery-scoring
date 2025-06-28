@@ -1,100 +1,134 @@
-import { useState } from 'react';
-import { CreateUser } from '@repo/shared-types';
-import { User, Mail } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useToast } from '@/components/ui/use-toast';
+import { User, Mail, Plus, X } from 'lucide-react';
+
+const createUserSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
+  email: z.string().email('Please enter a valid email address'),
+});
+
+type CreateUserFormData = z.infer<typeof createUserSchema>;
 
 interface CreateUserFormProps {
-  onSubmit: (userData: CreateUser) => void;
-  onCancel: () => void;
+  readonly onSubmit: (data: CreateUserFormData) => void;
+  readonly onCancel: () => void;
 }
 
-export function CreateUserForm({ onSubmit, onCancel }: CreateUserFormProps) {
-  const [formData, setFormData] = useState<CreateUser>({
-    name: '',
-    email: '',
+export function CreateUserForm({ onSubmit, onCancel }: Readonly<CreateUserFormProps>) {
+  const { toast } = useToast();
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<CreateUserFormData>({
+    resolver: zodResolver(createUserSchema),
+    defaultValues: {
+      name: '',
+      email: '',
+    },
   });
-  const [errors, setErrors] = useState<Partial<CreateUser>>({});
 
-  const validate = (): boolean => {
-    const newErrors: Partial<CreateUser> = {};
+  const handleFormSubmit = async (data: CreateUserFormData) => {
+    try {
+      onSubmit(data);
 
-    if (!formData.name.trim()) {
-      newErrors.name = 'Name is required';
-    }
-
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      onSubmit(formData);
+      reset();
+      toast({
+        title: "User Created",
+        description: "New user has been successfully created.",
+      });
+    } catch (error) {
+      console.error('Failed to create user:', error);
+      toast({
+        variant: "destructive",
+        title: "Creation Failed",
+        description: "Failed to create user. Please try again.",
+      });
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-          <div className="flex items-center space-x-2">
-            <User className="w-4 h-4" />
-            <span>Name</span>
+    <Card>
+      <CardHeader className="pb-4">
+        <CardTitle className="flex items-center space-x-2">
+          <Plus className="h-5 w-5" />
+          <span>Create New User</span>
+        </CardTitle>
+      </CardHeader>
+      
+      <CardContent>
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
+          {/* Name Field */}
+          <div className="space-y-2">
+            <Label htmlFor="name" className="text-sm font-medium">
+              Full Name
+            </Label>
+            <div className="relative">
+              <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter full name"
+                className={`pl-10 ${errors.name ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                {...register('name')}
+                disabled={isSubmitting}
+              />
+            </div>
+            {errors.name && (
+              <p className="text-sm text-destructive">{errors.name.message}</p>
+            )}
           </div>
-        </label>
-        <input
-          type="text"
-          id="name"
-          value={formData.name}
-          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          className={`input-field ${errors.name ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
-          placeholder="Enter full name"
-        />
-        {errors.name && (
-          <p className="text-red-600 text-sm mt-1">{errors.name}</p>
-        )}
-      </div>
 
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-          <div className="flex items-center space-x-2">
-            <Mail className="w-4 h-4" />
-            <span>Email</span>
+          {/* Email Field */}
+          <div className="space-y-2">
+            <Label htmlFor="email" className="text-sm font-medium">
+              Email Address
+            </Label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter email address"
+                className={`pl-10 ${errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                {...register('email')}
+                disabled={isSubmitting}
+              />
+            </div>
+            {errors.email && (
+              <p className="text-sm text-destructive">{errors.email.message}</p>
+            )}
           </div>
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className={`input-field ${errors.email ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
-          placeholder="Enter email address"
-        />
-        {errors.email && (
-          <p className="text-red-600 text-sm mt-1">{errors.email}</p>
-        )}
-      </div>
 
-      <div className="flex items-center justify-end space-x-3 pt-4">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="btn-secondary"
-        >
-          Cancel
-        </button>
-        <button
-          type="submit"
-          className="btn-primary"
-        >
-          Create User
-        </button>
-      </div>
-    </form>
+          {/* Action Buttons */}
+          <div className="flex items-center justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              className="btn btn-outline"
+              onClick={onCancel}
+              disabled={isSubmitting}
+            >
+              <X className="mr-2 h-4 w-4" />
+              Batal
+            </button>
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              {isSubmitting ? 'Creating...' : 'Create User'}
+            </Button>
+          </div>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
