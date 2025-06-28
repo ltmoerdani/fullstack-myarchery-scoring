@@ -58,7 +58,7 @@ export function WebSocketTest({ connectionStatus, messages, onSendMessage }: Rea
             <MessageCircle className="h-5 w-5" />
             <span>WebSocket Test</span>
           </div>
-          <Badge variant={getStatusVariant(connectionStatus)} className="flex items-center space-x-1">
+          <Badge className={"flex items-center space-x-1 " + (getStatusVariant(connectionStatus) ? `badge-${getStatusVariant(connectionStatus)}` : "") }>
             <Wifi className="h-3 w-3" />
             <span className="capitalize">{connectionStatus}</span>
           </Badge>
@@ -83,7 +83,7 @@ export function WebSocketTest({ connectionStatus, messages, onSendMessage }: Rea
             <Button
               onClick={handleSend}
               disabled={connectionStatus !== 'connected' || !messageText.trim()}
-              size="icon"
+              className="icon-btn"
             >
               <Send className="h-4 w-4" />
             </Button>
@@ -106,11 +106,11 @@ export function WebSocketTest({ connectionStatus, messages, onSendMessage }: Rea
                 </div>
               ) : (
                 <div className="space-y-2">
-                  {messages.map((message) => (
-                    <Card key={message.timestamp + '-' + message.type} className="bg-background">
+                  {messages.map((message, idx) => (
+                    <Card key={message.timestamp + '-' + message.type + '-' + idx} className="bg-background">
                       <CardContent className="p-3">
                         <div className="flex justify-between items-start mb-2">
-                          <Badge variant="outline" className="text-xs">
+                          <Badge className="text-xs badge-outline">
                             {message.type}
                           </Badge>
                           <span className="text-xs text-muted-foreground">

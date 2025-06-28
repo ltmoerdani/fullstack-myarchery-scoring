@@ -25,6 +25,15 @@ export function formatDateTime(date: Date | string): string {
   })
 }
 
+export function formatDateIndonesian(date: Date | string): string {
+  const d = new Date(date)
+  return d.toLocaleDateString('id-ID', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  })
+}
+
 export function capitalize(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }

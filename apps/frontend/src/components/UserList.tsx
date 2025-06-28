@@ -11,7 +11,7 @@ interface UserListProps {
   onDelete: (id: string) => Promise<void>;
 }
 
-export function UserList({ users, loading, error, onUpdate, onDelete }: UserListProps) {
+export function UserList({ users, loading, error, onUpdate, onDelete }: Readonly<UserListProps>) {
   if (loading) {
     return (
       <Card>
