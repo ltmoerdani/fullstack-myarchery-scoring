@@ -17,4 +17,8 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
   },
+  // Handle client-side routing
+  preview: {
+    port: 3000,
+  },
 });

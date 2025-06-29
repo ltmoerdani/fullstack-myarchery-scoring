@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { Target, User, LogOut, ChevronLeft } from 'lucide-react';
+import { User, LogOut, ChevronLeft } from 'lucide-react';
 
 interface PageHeaderProps {
   title?: string;
@@ -34,12 +34,15 @@ export function PageHeader({
         <div className="flex items-center space-x-3">
           <button 
             onClick={handleLogoClick}
-            className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
+            className="flex items-center hover:opacity-80 transition-opacity"
           >
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10">
+              <img 
+                src="/logo_myarchery.svg" 
+                alt="MyArchery Logo" 
+                className="w-full h-full object-contain"
+              />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-gray-900">myarchery.id</span>
           </button>
           {title && (
             <>

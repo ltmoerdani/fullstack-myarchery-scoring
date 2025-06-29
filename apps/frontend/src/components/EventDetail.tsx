@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { 
   ArrowLeft,
   ArrowRight,
-  Target,
   User,
   LogOut,
   Copy,
@@ -15,7 +14,10 @@ import {
   UserPlus,
   CheckCircle,
   Crosshair,
-  Settings
+  Settings,
+  ExternalLink,
+  Monitor,
+  Target
 } from 'lucide-react';
 
 interface EventDetailProps {
@@ -43,6 +45,16 @@ export function EventDetail({
     } catch (err) {
       console.error('Failed to copy URL:', err);
     }
+  };
+
+  const handleDOSClick = () => {
+    // Open DOS page in new tab
+    window.open('/dos', '_blank');
+  };
+
+  const handleLiveScoreClick = () => {
+    // Open Live Score page in new tab
+    window.open('/live-score', '_blank');
   };
 
   const handleMenuClick = (menuId: string) => {
@@ -138,10 +150,16 @@ export function EventDetail({
       <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            </div>
-            <span className="text-lg sm:text-xl font-bold text-gray-900">myarchery.id</span>
+            <button 
+              onClick={onBack}
+              className="w-8 h-8 sm:w-10 sm:h-10 hover:opacity-80 transition-opacity"
+            >
+              <img 
+                src="/logo_myarchery.svg" 
+                alt="MyArchery Logo" 
+                className="w-full h-full object-contain"
+              />
+            </button>
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -149,7 +167,12 @@ export function EventDetail({
               <User className="w-4 h-4" />
               <span className="text-sm hidden sm:inline">Pro Archery</span>
             </div>
-            <Button variant="ghost" size="sm" className="text-gray-600 p-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={onBack}
+              className="text-gray-600 p-2 hover:text-red-600 transition-colors"
+            >
               <LogOut className="w-4 h-4" />
               <span className="hidden md:inline ml-2">Logout</span>
             </Button>
@@ -192,10 +215,22 @@ export function EventDetail({
             </div>
             
             <div className="flex space-x-2">
-              <Button variant="outline" size="sm" className="text-sm">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-sm"
+                onClick={handleDOSClick}
+              >
+                <ExternalLink className="w-4 h-4 mr-2" />
                 Ke Halaman DOS
               </Button>
-              <Button variant="outline" size="sm" className="text-sm">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="text-sm"
+                onClick={handleLiveScoreClick}
+              >
+                <Monitor className="w-4 h-4 mr-2" />
                 Ke Live Score
               </Button>
             </div>

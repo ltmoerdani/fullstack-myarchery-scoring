@@ -11,7 +11,6 @@ import {
   MapPin, 
   Calendar,
   MoreHorizontal,
-  Target,
   LogOut
 } from 'lucide-react';
 import { AddEventForm } from './AddEventForm';
@@ -27,10 +26,12 @@ interface Event {
 
 interface DashboardProps {
   onEventClick?: () => void;
+  onCreateEventClick?: () => void;
+  onLogout?: () => void;
 }
 
 export function Dashboard(props: Readonly<DashboardProps>) {
-  const { onEventClick } = props;
+  const { onEventClick, onCreateEventClick, onLogout } = props;
   const [showAddEventForm, setShowAddEventForm] = useState(false);
   const [events, setEvents] = useState<Event[]>([
     {
@@ -74,16 +75,32 @@ export function Dashboard(props: Readonly<DashboardProps>) {
     }
   };
 
+  const handleCreateEventClick = () => {
+    if (onCreateEventClick) {
+      onCreateEventClick();
+    }
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
+  };
+
   return (
     <div className="min-h-screen w-full bg-gray-50 flex flex-col">
       {/* Sticky Header */}
       <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10">
+              <img 
+                src="/logo_myarchery.svg" 
+                alt="MyArchery Logo" 
+                className="w-full h-full object-contain cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => {}} // Already on dashboard, no action needed
+              />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-gray-900">myarchery.id</span>
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
@@ -91,7 +108,12 @@ export function Dashboard(props: Readonly<DashboardProps>) {
               <User className="w-4 h-4" />
               <span className="text-sm hidden sm:inline">Pro Archery</span>
             </div>
-            <Button variant="ghost" size="sm" className="text-gray-600 p-2">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              onClick={handleLogout}
+              className="text-gray-600 p-2 hover:text-red-600 transition-colors"
+            >
               <LogOut className="w-4 h-4" />
               <span className="hidden md:inline ml-2">Logout</span>
             </Button>
@@ -175,7 +197,7 @@ export function Dashboard(props: Readonly<DashboardProps>) {
             {/* Add New Event Card */}
             <Card 
               className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer group h-[280px]"
-              onClick={() => setShowAddEventForm(true)}
+              onClick={handleCreateEventClick}
             >
               <CardContent className="p-4 sm:p-6 h-full flex flex-col items-center justify-center">
                 <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 group-hover:bg-blue-200 rounded-full flex items-center justify-center mb-3 sm:mb-4 transition-colors">

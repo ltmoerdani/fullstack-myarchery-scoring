@@ -2,34 +2,54 @@ import * as React from "react"
 import { ChevronDown } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-interface SelectContextValue {
-  value: string
-  onValueChange: (value: string) => void
+interface SelectContextValue<T> {
+  value: T
+  onValueChange: (value: T) => void
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-const SelectContext = React.createContext<SelectContextValue | undefined>(undefined)
+const SelectContext = React.createContext<SelectContextValue<any> | undefined>(undefined)
 
-const useSelect = () => {
-  const context = React.useContext(SelectContext)
+const useSelect = <T,>() => {
+  const context = React.useContext(SelectContext) as SelectContextValue<T>
   if (!context) {
     throw new Error("useSelect must be used within a Select component")
   }
   return context
 }
 
-interface SelectProps {
-  value: string
-  onValueChange: (value: string) => void
+interface SelectProps<T> {
+  value?: T
+  onValueChange?: (value: T) => void
+  defaultValue?: T
   children: React.ReactNode
 }
 
-const Select = ({ value, onValueChange, children }: SelectProps) => {
+function Select<T>({ value, onValueChange, defaultValue, children }: SelectProps<T>) {
   const [open, setOpen] = React.useState(false)
+  const [internalValue, setInternalValue] = React.useState<T | undefined>(defaultValue)
+  
+  // Use controlled value if provided, otherwise use internal state
+  const currentValue = value !== undefined ? value : internalValue
+  
+  // Create a safe onValueChange function that always exists
+  const handleValueChange = React.useCallback((newValue: T) => {
+    if (value === undefined) {
+      // Uncontrolled mode - update internal state
+      setInternalValue(newValue)
+    }
+    // Call external onValueChange if provided
+    onValueChange?.(newValue)
+  }, [value, onValueChange])
 
   return (
-    <SelectContext.Provider value={{ value, onValueChange, open, onOpenChange: setOpen }}>
+    <SelectContext.Provider value={{ 
+      value: currentValue, 
+      onValueChange: handleValueChange, 
+      open, 
+      onOpenChange: setOpen 
+    }}>
       <div className="relative">
         {children}
       </div>
@@ -65,13 +85,13 @@ SelectTrigger.displayName = "SelectTrigger"
 
 const SelectValue = React.forwardRef<
   HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement>
->(({ className, ...props }, ref) => {
+  React.HTMLAttributes<HTMLSpanElement> & { placeholder?: string }
+>(({ className, placeholder, ...props }, ref) => {
   const { value } = useSelect()
   
   return (
     <span ref={ref} className={cn("", className)} {...props}>
-      {value}
+      {value?.toString() || <span className="text-muted-foreground">{placeholder}</span>}
     </span>
   )
 })
@@ -101,7 +121,7 @@ const SelectContent = React.forwardRef<
 SelectContent.displayName = "SelectContent"
 
 interface SelectItemProps extends React.HTMLAttributes<HTMLDivElement> {
-  value: string
+  value: any
 }
 
 const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(

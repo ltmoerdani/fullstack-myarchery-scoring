@@ -9,13 +9,42 @@ import { ScoringEliminasi } from '@/components/ScoringEliminasi';
 import { CertificatePage } from '@/components/CertificatePage';
 import { DocumentsPage } from '@/components/DocumentsPage';
 import { LoginPage } from '@/components/LoginPage';
+import { DOSPage } from '@/components/DOSPage';
+import { CreateEventPage } from '@/components/CreateEventPage';
+import { LiveScorePage } from '@/components/LiveScorePage';
 import { Toaster } from '@/components/ui/toaster';
 
-type CurrentPage = 'login' | 'dashboard' | 'event-detail' | 'bantalan-settings' | 'id-card-designer' | 'participant-details' | 'scoring-qualification' | 'scoring-eliminasi' | 'certificate' | 'documents';
+type CurrentPage = 'login' | 'dashboard' | 'event-detail' | 'bantalan-settings' | 'id-card-designer' | 'participant-details' | 'scoring-qualification' | 'scoring-eliminasi' | 'certificate' | 'documents' | 'dos' | 'create-event' | 'live-score';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [currentPage, setCurrentPage] = useState<CurrentPage>('dashboard');
+
+  // Check if we're on the DOS route (public access)
+  const isDOSRoute = window.location.pathname === '/dos';
+  
+  // Check if we're on the Live Score route (public access)
+  const isLiveScoreRoute = window.location.pathname === '/live-score';
+
+  // Show DOS page if on DOS route (no login required)
+  if (isDOSRoute) {
+    return (
+      <>
+        <DOSPage />
+        <Toaster />
+      </>
+    );
+  }
+
+  // Show Live Score page if on live score route (no login required)
+  if (isLiveScoreRoute) {
+    return (
+      <>
+        <LiveScorePage />
+        <Toaster />
+      </>
+    );
+  }
 
   // Show login page if not logged in
   if (!isLoggedIn) {
@@ -55,6 +84,14 @@ function App() {
   // Handle page navigation
   const renderCurrentPage = () => {
     switch (currentPage) {
+      case 'create-event':
+        return (
+          <CreateEventPage 
+            onBack={() => setCurrentPage('dashboard')}
+            onLogout={handleLogout}
+            onDashboard={handleNavigateToDashboard}
+          />
+        );
       case 'documents':
         return (
           <DocumentsPage 
@@ -113,7 +150,13 @@ function App() {
         );
       case 'dashboard':
       default:
-        return <Dashboard onEventClick={() => setCurrentPage('event-detail')} />;
+        return (
+          <Dashboard 
+            onEventClick={() => setCurrentPage('event-detail')}
+            onCreateEventClick={() => setCurrentPage('create-event')}
+            onLogout={handleLogout}
+          />
+        );
     }
   };
 
