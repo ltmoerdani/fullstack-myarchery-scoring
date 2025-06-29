@@ -25,7 +25,12 @@ interface Event {
   status: 'published' | 'draft';
 }
 
-export function Dashboard() {
+interface DashboardProps {
+  onEventClick?: () => void;
+}
+
+export function Dashboard(props: Readonly<DashboardProps>) {
+  const { onEventClick } = props;
   const [showAddEventForm, setShowAddEventForm] = useState(false);
   const [events, setEvents] = useState<Event[]>([
     {
@@ -63,105 +68,176 @@ export function Dashboard() {
     setShowAddEventForm(false);
   };
 
+  const handleEventClick = () => {
+    if (onEventClick) {
+      onEventClick();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
+      <header className="w-full bg-white border-b border-gray-200">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <Target className="w-6 h-6 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
+              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">myarchery.id</span>
+            <span className="text-lg sm:text-xl font-bold text-gray-900">myarchery.id</span>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-2 sm:space-x-4">
             <div className="flex items-center space-x-2 text-gray-600">
               <User className="w-4 h-4" />
-              <span className="text-sm">Pro Archery</span>
+              <span className="text-sm hidden sm:inline">Pro Archery</span>
             </div>
-            <Button variant="ghost" size="sm" className="text-gray-600">
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
+            <Button variant="ghost" size="sm" className="text-gray-600 p-2">
+              <LogOut className="w-4 h-4" />
+              <span className="hidden md:inline ml-2">Logout</span>
             </Button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      {/* Main Content Container */}
+      <main className="flex-1 w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-6 sm:py-8">
         {/* Page Title */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Atur akun & eventmu di sini</p>
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Atur akun & eventmu di sini</p>
         </div>
 
-        {/* Top Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* Pro Archery Profile Card */}
-          <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
+        {/* Top Cards Section */}
+        <div className="mb-8 sm:mb-12">
+          {/* Mobile Layout (iPhone SE: 375px and smaller mobile devices) */}
+          <div className="block sm:hidden space-y-4">
+            {/* Pro Archery Profile Card - Mobile (Full Width with horizontal layout) */}
+            <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
+              <CardContent className="p-6">
                 <div className="flex items-center space-x-4">
-                  <Avatar className="w-16 h-16">
-                    <AvatarImage src="/api/placeholder/64/64" alt="Pro Archery" />
-                    <AvatarFallback className="bg-blue-100 text-blue-600 text-lg font-semibold">
+                  {/* Avatar on the left */}
+                  <div className="flex-shrink-0">
+                    <Avatar className="w-16 h-16">
+                      <AvatarImage src="/api/placeholder/64/64" alt="Pro Archery" />
+                      <AvatarFallback className="bg-blue-100 text-blue-600 text-lg font-semibold">
+                        PA
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  
+                  {/* Content in the middle */}
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Pro Archery</h3>
+                    <div className="text-sm text-gray-600">
+                      <p className="mb-1">Email</p>
+                      <p className="font-medium truncate">proarchery.rcd@gmail.com</p>
+                    </div>
+                  </div>
+                  
+                  {/* Button on the right */}
+                  <div className="flex-shrink-0">
+                    <Button variant="outline" size="sm" className="px-4 py-2 text-sm">
+                      Edit Profil
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Users Management Card - Mobile (Vertical layout with icon on top) */}
+            <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
+              <CardContent className="p-6 h-full flex flex-col">
+                {/* Icon at the top */}
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+                  <Users className="w-8 h-8 text-gray-600" />
+                </div>
+                
+                {/* Title */}
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Users</h3>
+                
+                {/* Description */}
+                <p className="text-sm text-gray-600 mb-4 flex-1">
+                  Mengatur pengguna seperti manager event
+                </p>
+                
+                {/* Footer with arrow - same structure as event cards */}
+                <div className="flex justify-end mt-auto">
+                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Tablet and Desktop Layout */}
+          <div className="hidden sm:grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Pro Archery Profile Card */}
+            <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group h-[200px]">
+              <CardContent className="p-6 h-full flex items-center justify-between">
+                <div className="flex items-center space-x-6">
+                  <Avatar className="w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0">
+                    <AvatarImage src="/api/placeholder/80/80" alt="Pro Archery" />
+                    <AvatarFallback className="bg-blue-100 text-blue-600 text-lg lg:text-xl font-semibold">
                       PA
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-1">Pro Archery</h3>
+                    <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-2 lg:mb-3">Pro Archery</h3>
                     <div className="text-sm text-gray-600">
                       <p className="mb-1">Email</p>
-                      <p>proarchery.red@gmail.com</p>
+                      <p className="font-medium">proarchery.rcd@gmail.com</p>
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col items-end space-y-3">
-                  <Button variant="outline" size="sm">
+                <div className="flex flex-col items-end space-y-3 lg:space-y-4">
+                  <Button variant="outline" size="sm" className="px-4 lg:px-6">
                     Edit Profil
                   </Button>
-                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                  <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-gray-600 transition-colors" />
                 </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          {/* Users Management Card */}
-          <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                    <Users className="w-8 h-8 text-gray-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-1">Users</h3>
-                    <p className="text-sm text-gray-600">
-                      Mengatur pengguna seperti manager event
-                    </p>
-                  </div>
+            {/* Users Management Card - Universal Vertical Layout with proper arrow position */}
+            <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group h-[200px]">
+              <CardContent className="p-6 h-full flex flex-col">
+                {/* Icon at the top */}
+                <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4 lg:mb-6">
+                  <Users className="w-8 h-8 lg:w-10 lg:h-10 text-gray-600" />
                 </div>
-                <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
-              </div>
-            </CardContent>
-          </Card>
+                
+                {/* Title */}
+                <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-2 lg:mb-3">Users</h3>
+                
+                {/* Description */}
+                <p className="text-sm text-gray-600 mb-4 lg:mb-6 flex-1">
+                  Mengatur pengguna seperti manager event
+                </p>
+                
+                {/* Footer with arrow - exact same structure as event cards */}
+                <div className="flex justify-end mt-auto">
+                  <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Events Section */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Event Terbaru</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Event Terbaru</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Events Grid - Responsive */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {/* Add New Event Card */}
             <Card 
-              className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer group"
+              className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer group h-[200px] sm:h-[240px]"
               onClick={() => setShowAddEventForm(true)}
             >
-              <CardContent className="p-6 flex flex-col items-center justify-center h-48">
-                <div className="w-12 h-12 bg-gray-200 group-hover:bg-blue-200 rounded-full flex items-center justify-center mb-3 transition-colors">
-                  <Plus className="w-6 h-6 text-gray-500 group-hover:text-blue-600" />
+              <CardContent className="p-4 sm:p-6 h-full flex flex-col items-center justify-center">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-200 group-hover:bg-blue-200 rounded-full flex items-center justify-center mb-3 sm:mb-4 transition-colors">
+                  <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-gray-500 group-hover:text-blue-600" />
                 </div>
-                <p className="text-gray-600 group-hover:text-blue-600 font-medium transition-colors">
+                <p className="text-gray-600 group-hover:text-blue-600 font-medium transition-colors text-center text-sm sm:text-base">
                   Tambah Event Baru
                 </p>
               </CardContent>
@@ -169,37 +245,45 @@ export function Dashboard() {
 
             {/* Event Cards */}
             {events.map((event) => (
-              <Card key={event.id} className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
+              <Card 
+                key={event.id} 
+                className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group h-[200px] sm:h-[240px]"
+                onClick={() => handleEventClick()}
+              >
+                <CardContent className="p-4 sm:p-6 h-full flex flex-col">
+                  {/* Header with status and menu */}
+                  <div className="flex items-start justify-between mb-3 sm:mb-4">
                     <Badge 
                       variant={event.status === 'published' ? 'default' : 'secondary'}
-                      className="text-xs"
+                      className="text-xs px-2 sm:px-3 py-1"
                     >
                       Terpublikasi
                     </Badge>
-                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                      <MoreHorizontal className="w-4 h-4" />
+                    <Button variant="ghost" size="sm" className="h-6 w-6 sm:h-8 sm:w-8 p-0">
+                      <MoreHorizontal className="w-3 h-3 sm:w-4 sm:h-4" />
                     </Button>
                   </div>
                   
-                  <h3 className="font-semibold text-gray-900 mb-3 line-clamp-2 leading-tight">
+                  {/* Event Title */}
+                  <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 line-clamp-2 leading-tight text-sm sm:text-base">
                     {event.title}
                   </h3>
                   
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <MapPin className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span className="line-clamp-1">{event.location}</span>
+                  {/* Event Details */}
+                  <div className="space-y-2 sm:space-y-3 mb-3 sm:mb-4 flex-1">
+                    <div className="flex items-start text-xs sm:text-sm text-gray-600">
+                      <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" />
+                      <span className="line-clamp-2">{event.location}</span>
                     </div>
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Calendar className="w-4 h-4 mr-2 flex-shrink-0" />
-                      <span>{event.startDate} - {event.endDate}</span>
+                    <div className="flex items-center text-xs sm:text-sm text-gray-600">
+                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-2 sm:mr-3 flex-shrink-0" />
+                      <span className="truncate">{event.startDate} - {event.endDate}</span>
                     </div>
                   </div>
                   
-                  <div className="flex justify-end">
-                    <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                  {/* Footer with arrow */}
+                  <div className="flex justify-end mt-auto">
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
                   </div>
                 </CardContent>
               </Card>
@@ -209,16 +293,16 @@ export function Dashboard() {
 
         {/* View All Events Link */}
         <div className="text-center">
-          <Button variant="link" className="text-blue-600 hover:text-blue-700">
+          <Button variant="link" className="text-blue-600 hover:text-blue-700 text-sm sm:text-base">
             Lihat Semua Event
           </Button>
         </div>
-      </div>
+      </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-6 mt-12">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-sm text-gray-600">
+      {/* Footer - positioned at bottom */}
+      <footer className="w-full bg-white border-t border-gray-200 py-4 sm:py-6 mt-auto">
+        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] text-center">
+          <p className="text-xs sm:text-sm text-gray-600">
             2025 © MyArchery. Designed & Developed by Reka Cipta Digital
           </p>
         </div>
