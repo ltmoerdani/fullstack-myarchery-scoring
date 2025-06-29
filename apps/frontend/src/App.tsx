@@ -12,8 +12,8 @@ import { Toaster } from '@/components/ui/toaster';
 type CurrentPage = 'login' | 'dashboard' | 'event-detail' | 'bantalan-settings' | 'id-card-designer' | 'participant-details' | 'scoring-qualification' | 'scoring-eliminasi';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Set to true to show dashboard by default
-  const [currentPage, setCurrentPage] = useState<CurrentPage>('scoring-eliminasi'); // Set to scoring-eliminasi for testing
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [currentPage, setCurrentPage] = useState<CurrentPage>('dashboard');
 
   // Show login page if not logged in
   if (!isLoggedIn) {

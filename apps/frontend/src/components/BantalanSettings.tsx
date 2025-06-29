@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { 
   Target,
   User,
@@ -74,33 +75,18 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
     }
   };
 
-  const handleUnduhNoBantalan = () => {
-    console.log('Unduh No. Bantalan Peserta');
-  };
-
-  const handleUnduhSemuaNoBantalan = () => {
-    console.log('Unduh Semua No. Bantalan Peserta');
-  };
-
-  const handleUbahBantalanPeserta = () => {
-    console.log('Ubah Bantalan Peserta');
-  };
-
-  const handleTerapkan = () => {
-    console.log('Terapkan perubahan');
-  };
-
-  // Untuk update array, gunakan map dan update berdasarkan kategori
   const handleAwalBantalanChange = (kategori: string, value: number) => {
     setBantalanData((prev) => prev.map((item) =>
       item.kategori === kategori ? { ...item, awalBantalan: value } : item
     ));
   };
+
   const handleAkhirBantalanChange = (kategori: string, value: number) => {
     setBantalanData((prev) => prev.map((item) =>
       item.kategori === kategori ? { ...item, akhirBantalan: value } : item
     ));
   };
+
   const handleTargetFaceChange = (kategori: string, value: number) => {
     setBantalanData((prev) => prev.map((item) =>
       item.kategori === kategori ? { ...item, targetFace: value } : item
@@ -109,8 +95,8 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
 
   return (
     <div className="min-h-screen w-full bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-white border-b border-gray-200">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
@@ -137,7 +123,7 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="w-full bg-blue-700">
+      <nav className="sticky top-[73px] z-40 w-full bg-blue-700">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px]">
           <div className="flex space-x-0 overflow-x-auto">
             {navigationTabs.map((tab) => (
@@ -164,7 +150,6 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
         <div className="flex justify-end mb-6 space-x-3">
           <Button 
             variant="outline" 
-            onClick={handleUnduhSemuaNoBantalan}
             className="text-blue-600 border-blue-600 hover:bg-blue-50"
           >
             Unduh Semua No. Bantalan Peserta
@@ -187,9 +172,9 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
               {/* Date Input */}
               <div className="flex-1 max-w-xs">
-                <label htmlFor="bertandingTanggal" className="block text-sm font-medium text-gray-700 mb-2">
+                <Label htmlFor="bertandingTanggal" className="block text-sm font-medium text-gray-700 mb-2">
                   Tanggal Bertanding
-                </label>
+                </Label>
                 <Input
                   id="bertandingTanggal"
                   type="text"
@@ -202,7 +187,6 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
               {/* Download Button */}
               <Button 
                 variant="outline"
-                onClick={handleUnduhNoBantalan}
                 className="text-blue-600 border-blue-600 hover:bg-blue-50"
               >
                 Unduh No. Bantalan Peserta
@@ -212,13 +196,11 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
               <div className="flex space-x-3">
                 <Button 
                   variant="outline"
-                  onClick={handleUbahBantalanPeserta}
                   className="text-blue-600 border-blue-600 hover:bg-blue-50"
                 >
                   Ubah Bantalan Peserta
                 </Button>
                 <Button 
-                  onClick={handleTerapkan}
                   className="bg-blue-600 hover:bg-blue-700 text-white"
                 >
                   Terapkan
@@ -265,7 +247,6 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
                       </td>
                       <td className="py-4 px-4 text-center">
                         <Input
-                          id="awalBantalan"
                           type="number"
                           value={data.awalBantalan}
                           onChange={(e) => handleAwalBantalanChange(data.kategori, parseInt(e.target.value) || 0)}
@@ -274,7 +255,6 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
                       </td>
                       <td className="py-4 px-4 text-center">
                         <Input
-                          id="akhirBantalan"
                           type="number"
                           value={data.akhirBantalan}
                           onChange={(e) => handleAkhirBantalanChange(data.kategori, parseInt(e.target.value) || 0)}
@@ -283,7 +263,6 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
                       </td>
                       <td className="py-4 px-4 text-center">
                         <Input
-                          id="targetFace"
                           type="number"
                           value={data.targetFace}
                           onChange={(e) => handleTargetFaceChange(data.kategori, parseInt(e.target.value) || 0)}

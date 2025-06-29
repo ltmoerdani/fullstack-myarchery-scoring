@@ -76,8 +76,8 @@ export function Dashboard(props: Readonly<DashboardProps>) {
 
   return (
     <div className="min-h-screen w-full bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-white border-b border-gray-200">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
@@ -107,36 +107,33 @@ export function Dashboard(props: Readonly<DashboardProps>) {
           <p className="text-gray-600 text-sm sm:text-base">Atur akun & eventmu di sini</p>
         </div>
 
-        {/* Top Cards Section */}
+        {/* Top Cards Section - 2 Column Grid for Desktop */}
         <div className="mb-8 sm:mb-12">
-          {/* Mobile Layout (iPhone SE: 375px and smaller mobile devices) */}
-          <div className="block sm:hidden space-y-4">
-            {/* Pro Archery Profile Card - Mobile (Full Width with horizontal layout) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Pro Archery Profile Card - Horizontal Layout */}
             <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
               <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  {/* Avatar on the left */}
-                  <div className="flex-shrink-0">
-                    <Avatar className="w-16 h-16">
-                      <AvatarImage src="/api/placeholder/64/64" alt="Pro Archery" />
-                      <AvatarFallback className="bg-blue-100 text-blue-600 text-lg font-semibold">
-                        PA
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
+                <div className="flex items-center space-x-6">
+                  {/* Avatar */}
+                  <Avatar className="w-20 h-20 flex-shrink-0">
+                    <AvatarImage src="/api/placeholder/80/80" alt="Pro Archery" />
+                    <AvatarFallback className="bg-blue-100 text-blue-600 text-xl font-semibold">
+                      PA
+                    </AvatarFallback>
+                  </Avatar>
                   
-                  {/* Content in the middle */}
+                  {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Pro Archery</h3>
+                    <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-2 lg:mb-3">Pro Archery</h3>
                     <div className="text-sm text-gray-600">
                       <p className="mb-1">Email</p>
-                      <p className="font-medium truncate">proarchery.rcd@gmail.com</p>
+                      <p className="font-medium">proarchery.rcd@gmail.com</p>
                     </div>
                   </div>
                   
-                  {/* Button on the right */}
+                  {/* Action Button */}
                   <div className="flex-shrink-0">
-                    <Button variant="outline" size="sm" className="px-4 py-2 text-sm">
+                    <Button variant="outline" size="sm" className="px-4 lg:px-6">
                       Edit Profil
                     </Button>
                   </div>
@@ -144,61 +141,8 @@ export function Dashboard(props: Readonly<DashboardProps>) {
               </CardContent>
             </Card>
 
-            {/* Users Management Card - Mobile (Vertical layout with icon on top) */}
+            {/* Users Management Card - Vertical Layout */}
             <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group">
-              <CardContent className="p-6 h-full flex flex-col">
-                {/* Icon at the top */}
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                  <Users className="w-8 h-8 text-gray-600" />
-                </div>
-                
-                {/* Title */}
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Users</h3>
-                
-                {/* Description */}
-                <p className="text-sm text-gray-600 mb-4 flex-1">
-                  Mengatur pengguna seperti manager event
-                </p>
-                
-                {/* Footer with arrow - same structure as event cards */}
-                <div className="flex justify-end mt-auto">
-                  <ArrowRight className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Tablet and Desktop Layout */}
-          <div className="hidden sm:grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Pro Archery Profile Card */}
-            <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group h-[200px]">
-              <CardContent className="p-6 h-full flex items-center justify-between">
-                <div className="flex items-center space-x-6">
-                  <Avatar className="w-16 h-16 lg:w-20 lg:h-20 flex-shrink-0">
-                    <AvatarImage src="/api/placeholder/80/80" alt="Pro Archery" />
-                    <AvatarFallback className="bg-blue-100 text-blue-600 text-lg lg:text-xl font-semibold">
-                      PA
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="text-xl lg:text-2xl font-semibold text-gray-900 mb-2 lg:mb-3">Pro Archery</h3>
-                    <div className="text-sm text-gray-600">
-                      <p className="mb-1">Email</p>
-                      <p className="font-medium">proarchery.rcd@gmail.com</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end space-y-3 lg:space-y-4">
-                  <Button variant="outline" size="sm" className="px-4 lg:px-6">
-                    Edit Profil
-                  </Button>
-                  <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-gray-600 transition-colors" />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Users Management Card - Universal Vertical Layout with proper arrow position */}
-            <Card className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group h-[200px]">
               <CardContent className="p-6 h-full flex flex-col">
                 {/* Icon at the top */}
                 <div className="w-16 h-16 lg:w-20 lg:h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4 lg:mb-6">
@@ -213,7 +157,7 @@ export function Dashboard(props: Readonly<DashboardProps>) {
                   Mengatur pengguna seperti manager event
                 </p>
                 
-                {/* Footer with arrow - exact same structure as event cards */}
+                {/* Footer with arrow */}
                 <div className="flex justify-end mt-auto">
                   <ArrowRight className="w-5 h-5 lg:w-6 lg:h-6 text-gray-400 group-hover:text-gray-600 transition-colors" />
                 </div>
@@ -226,11 +170,11 @@ export function Dashboard(props: Readonly<DashboardProps>) {
         <div className="mb-8">
           <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">Event Terbaru</h2>
           
-          {/* Events Grid - Responsive */}
+          {/* Events Grid - 4 Column Layout for Desktop */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {/* Add New Event Card */}
             <Card 
-              className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer group h-[200px] sm:h-[240px]"
+              className="border-2 border-dashed border-gray-300 hover:border-blue-400 hover:bg-blue-50/50 transition-all duration-200 cursor-pointer group h-[280px]"
               onClick={() => setShowAddEventForm(true)}
             >
               <CardContent className="p-4 sm:p-6 h-full flex flex-col items-center justify-center">
@@ -238,7 +182,7 @@ export function Dashboard(props: Readonly<DashboardProps>) {
                   <Plus className="w-6 h-6 sm:w-8 sm:h-8 text-gray-500 group-hover:text-blue-600" />
                 </div>
                 <p className="text-gray-600 group-hover:text-blue-600 font-medium transition-colors text-center text-sm sm:text-base">
-                  Tambah Event Baru
+                  Tambah Event
                 </p>
               </CardContent>
             </Card>
@@ -247,15 +191,15 @@ export function Dashboard(props: Readonly<DashboardProps>) {
             {events.map((event) => (
               <Card 
                 key={event.id} 
-                className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group h-[200px] sm:h-[240px]"
+                className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group h-[280px]"
                 onClick={() => handleEventClick()}
               >
                 <CardContent className="p-4 sm:p-6 h-full flex flex-col">
                   {/* Header with status and menu */}
                   <div className="flex items-start justify-between mb-3 sm:mb-4">
                     <Badge 
-                      variant={event.status === 'published' ? 'default' : 'secondary'}
-                      className="text-xs px-2 sm:px-3 py-1"
+                      variant="outline"
+                      className="text-xs px-2 sm:px-3 py-1 bg-green-100 text-green-800 border-green-200"
                     >
                       Terpublikasi
                     </Badge>
@@ -265,7 +209,7 @@ export function Dashboard(props: Readonly<DashboardProps>) {
                   </div>
                   
                   {/* Event Title */}
-                  <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 line-clamp-2 leading-tight text-sm sm:text-base">
+                  <h3 className="font-semibold text-gray-900 mb-3 sm:mb-4 line-clamp-2 leading-tight text-sm sm:text-base text-blue-600">
                     {event.title}
                   </h3>
                   
@@ -283,7 +227,7 @@ export function Dashboard(props: Readonly<DashboardProps>) {
                   
                   {/* Footer with arrow */}
                   <div className="flex justify-end mt-auto">
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 group-hover:text-blue-700 transition-colors" />
                   </div>
                 </CardContent>
               </Card>
@@ -299,7 +243,7 @@ export function Dashboard(props: Readonly<DashboardProps>) {
         </div>
       </main>
 
-      {/* Footer - positioned at bottom */}
+      {/* Footer */}
       <footer className="w-full bg-white border-t border-gray-200 py-4 sm:py-6 mt-auto">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] text-center">
           <p className="text-xs sm:text-sm text-gray-600">

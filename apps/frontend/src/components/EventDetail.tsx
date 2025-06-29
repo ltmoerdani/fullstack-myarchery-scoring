@@ -46,7 +46,6 @@ export function EventDetail({ onBack, onPengaturanAcaraClick, onPesertaIndividuC
     } else if (menuId === 'pertandingan' && onPertandinganClick) {
       onPertandinganClick();
     }
-    // Handle other menu clicks here
   };
 
   const menuItems = [
@@ -126,8 +125,8 @@ export function EventDetail({ onBack, onPengaturanAcaraClick, onPesertaIndividuC
 
   return (
     <div className="min-h-screen w-full bg-gray-50 flex flex-col">
-      {/* Header */}
-      <header className="w-full bg-white border-b border-gray-200">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
