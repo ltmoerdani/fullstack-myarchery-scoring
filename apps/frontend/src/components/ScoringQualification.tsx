@@ -1,23 +1,29 @@
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   Target,
-  User,
-  LogOut,
   Home,
   Download,
   Search,
-  ChevronRight,
-  ChevronLeft,
-  X,
   Settings
 } from 'lucide-react';
 
+// Import new components
+import { PageHeader } from '@/components/common/PageHeader';
+import { NavigationTabs } from '@/components/common/NavigationTabs';
+import { FilterSection, FilterButton } from '@/components/common/FilterSection';
+import { PageFooter } from '@/components/common/PageFooter';
+import { QualificationTable } from '@/components/scoring/QualificationTable';
+import { ScoringDetailPanel } from '@/components/scoring/ScoringDetailPanel';
+
 interface ScoringQualificationProps {
   readonly onBack: () => void;
+  readonly onNavigate?: (page: string) => void;
+  readonly onLogout?: () => void;
+  readonly onDashboard?: () => void;
 }
 
 interface Participant {
@@ -38,22 +44,20 @@ interface Participant {
   };
 }
 
-interface ScoringDetail {
-  readonly end: number;
-  readonly shot: string;
-  readonly arrows: readonly (number | string)[];
-  readonly total: number;
-}
-
-export function ScoringQualification({ onBack }: Readonly<ScoringQualificationProps>) {
-  const [activeTab, setActiveTab] = useState<'barebow' | 'compound'>('barebow');
+export function ScoringQualification({ 
+  onBack, 
+  onNavigate, 
+  onLogout, 
+  onDashboard 
+}: Readonly<ScoringQualificationProps>) {
+  const [activeTab, setActiveTab] = useState('barebow');
   const [selectedKelas, setSelectedKelas] = useState('Master - 20m');
   const [selectedJenisRegu, setSelectedJenisRegu] = useState('Individu Putra');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null);
   const [isDetailExpanded, setIsDetailExpanded] = useState(false);
-  const [activeSession, setActiveSession] = useState<'session1' | 'session2' | 'shootoff'>('session1');
   const [selectedParticipants, setSelectedParticipants] = useState<Set<string>>(new Set());
+  const [activeNavTab, setActiveNavTab] = useState('scoring-kualifikasi');
 
   // Sample data for Barebow
   const barebowParticipants: Participant[] = [
@@ -291,22 +295,55 @@ export function ScoringQualification({ onBack }: Readonly<ScoringQualificationPr
     }
   ];
 
-  // Sample scoring detail data
-  const scoringDetails: ScoringDetail[] = [
-    { end: 1, shot: 'X', arrows: ['X', 10, 10, 10, 9, 9], total: 58 },
-    { end: 2, shot: 'X', arrows: ['X', 10, 10, 10, 9, 9], total: 58 },
-    { end: 3, shot: 'X', arrows: ['X', 'X', 'X', 'X', 'X', 8], total: 58 },
-    { end: 4, shot: 'X', arrows: ['X', 'X', 10, 9, 9, 8], total: 56 },
-    { end: 5, shot: 'X', arrows: ['X', 'X', 'X', 'X', 10, 10], total: 60 },
-    { end: 6, shot: 'X', arrows: ['X', 'X', 10, 10, 10, 9], total: 59 }
-  ];
-
   const navigationTabs = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'scoring-kualifikasi', label: 'Scoring Kualifikasi', icon: Target, active: true },
+    { id: 'scoring-kualifikasi', label: 'Scoring Kualifikasi', icon: Target },
     { id: 'scoring-eliminasi', label: 'Scoring Eliminasi', icon: Settings },
     { id: 'dokumen', label: 'Dokumen', icon: Download }
   ];
+
+  const handleNavigationTabClick = (tabId: string) => {
+    setActiveNavTab(tabId);
+    
+    switch (tabId) {
+      case 'dashboard':
+        // Navigate back to event detail page (PRO MASTER GAMES)
+        if (onBack) {
+          onBack();
+        }
+        break;
+      case 'scoring-kualifikasi':
+        // Stay on current page
+        break;
+      case 'scoring-eliminasi':
+        // Navigate to scoring elimination page
+        if (onNavigate) {
+          onNavigate('scoring-eliminasi');
+        }
+        break;
+      case 'dokumen':
+        // Navigate to documents page
+        if (onNavigate) {
+          onNavigate('dokumen');
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handleLogoClick = () => {
+    // Navigate to main dashboard (after login)
+    if (onDashboard) {
+      onDashboard();
+    }
+  };
+
+  const handleLogout = () => {
+    if (onLogout) {
+      onLogout();
+    }
+  };
 
   const getFilteredParticipants = () => {
     const participants = activeTab === 'barebow' ? barebowParticipants : compoundParticipants;
@@ -329,187 +366,97 @@ export function ScoringQualification({ onBack }: Readonly<ScoringQualificationPr
     setSelectedParticipant(null);
   };
 
-  const handleScoreInput = (endIndex: number, arrowIndex: number, value: string) => {
-    // Handle score input logic here
-    console.log(`Score input: End ${endIndex + 1}, Arrow ${arrowIndex + 1}, Value: ${value}`);
-  };
-
-  // Base state management functions
-  const handleSelectAllParticipants = () => {
-    const allPositions = filteredParticipants.map(p => p.position);
-    setSelectedParticipants(new Set(allPositions));
-  };
-
-  const handleUnselectAllParticipants = () => {
-    setSelectedParticipants(new Set());
-  };
-
-  const handleAddParticipant = (position: string) => {
-    setSelectedParticipants(prev => new Set([...prev, position]));
-  };
-
-  const handleRemoveParticipant = (position: string) => {
+  const handleParticipantSelect = (position: string, selected: boolean) => {
     setSelectedParticipants(prev => {
       const newSet = new Set(prev);
-      newSet.delete(position);
+      if (selected) {
+        newSet.add(position);
+      } else {
+        newSet.delete(position);
+      }
       return newSet;
     });
   };
 
-  // Checkbox event handlers
-  const onSelectAllChecked = () => {
-    handleSelectAllParticipants();
-  };
-
-  const onSelectAllUnchecked = () => {
-    handleUnselectAllParticipants();
-  };
-
-  const onParticipantChecked = (position: string) => () => {
-    handleAddParticipant(position);
-  };
-
-  const onParticipantUnchecked = (position: string) => () => {
-    handleRemoveParticipant(position);
+  const handleSelectAll = (selected: boolean) => {
+    if (selected) {
+      const allPositions = filteredParticipants.map(p => p.position);
+      setSelectedParticipants(new Set(allPositions));
+    } else {
+      setSelectedParticipants(new Set());
+    }
   };
 
   const filteredParticipants = getFilteredParticipants();
-  const isAllSelected = filteredParticipants.length > 0 && filteredParticipants.every(p => selectedParticipants.has(p.position));
-  const isIndeterminate = selectedParticipants.size > 0 && !isAllSelected;
 
   return (
     <div className="min-h-screen w-full bg-gray-50 flex flex-col">
-      {/* Sticky Header */}
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-            </div>
-            <span className="text-lg sm:text-xl font-bold text-gray-900">myarchery.id</span>
-          </div>
-          
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-gray-600 p-2">
-              <ChevronLeft className="w-4 h-4" />
-              <span className="hidden md:inline ml-2">Back</span>
-            </Button>
-            <div className="flex items-center space-x-2 text-gray-600">
-              <User className="w-4 h-4" />
-              <span className="text-sm hidden sm:inline">Pro Archery</span>
-            </div>
-            <Button variant="ghost" size="sm" className="text-gray-600 p-2">
-              <LogOut className="w-4 h-4" />
-              <span className="hidden md:inline ml-2">Logout</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      {/* Header */}
+      <PageHeader 
+        title="Scoring Kualifikasi" 
+        showBackButton 
+        onBack={onBack}
+        onLogoClick={handleLogoClick}
+        onLogout={handleLogout}
+      />
 
       {/* Navigation Tabs */}
-      <nav className="sticky top-[73px] z-40 w-full bg-blue-700">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px]">
-          <div className="flex space-x-0 overflow-x-auto">
-            {navigationTabs.map((tab) => (
-              <button
-                key={tab.id}
-                className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
-                  tab.active
-                    ? 'bg-blue-600 text-white border-b-2 border-white'
-                    : 'text-blue-100 hover:text-white hover:bg-blue-600'
-                }`}
-              >
-                <tab.icon className="w-4 h-4" />
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </nav>
+      <NavigationTabs 
+        tabs={navigationTabs} 
+        onTabClick={handleNavigationTabClick}
+        activeTabId={activeNavTab}
+      />
 
       {/* Main Content */}
       <main className="flex-1 w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-6 sm:py-8">
         {/* Category Tabs */}
         <div className="mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="flex space-x-8">
-              <button
-                onClick={() => setActiveTab('barebow')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === 'barebow'
-                    ? 'border-orange-500 text-orange-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Barebow
-              </button>
-              <button
-                onClick={() => setActiveTab('compound')}
-                className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === 'compound'
-                    ? 'border-orange-500 text-orange-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                Compound
-              </button>
-            </nav>
-          </div>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 lg:w-auto lg:grid-cols-2">
+              <TabsTrigger value="barebow">Barebow</TabsTrigger>
+              <TabsTrigger value="compound">Compound</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
 
-        {/* Filters and Controls - Fixed Vertical Layout */}
-        <div className="mb-6">
-          <div className="flex flex-col lg:flex-row lg:justify-between space-y-4 lg:space-y-0">
-            {/* Filter Controls - Vertical Layout */}
-            <div className="space-y-4">
-              {/* Kelas Filter */}
-              <div className="flex items-center space-x-3">
-                <label htmlFor="kelas-select" className="text-sm font-medium text-gray-700 w-20">
-                  Kelas:
-                </label>
-                <select
-                  id="kelas-select"
-                  value={selectedKelas}
-                  onChange={(e) => setSelectedKelas(e.target.value)}
-                  className="px-3 py-1.5 border border-blue-300 rounded-md text-sm bg-white text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[140px]"
-                >
-                  <option value="Master - 20m">Master - 20m</option>
-                  <option value="Master - 30m">Master - 30m</option>
-                </select>
-              </div>
-
-              {/* Jenis Regu Filter */}
-              <fieldset className="flex items-start space-x-3">
-                <legend className="text-sm font-medium text-gray-700 w-20 pt-1.5">
-                  Jenis Regu:
-                </legend>
-                <div className="flex flex-wrap gap-2 max-w-md">
-                  {['Individu Putra', 'Individu Putri', 'Beregu Putra', 'Beregu Putri', 'Beregu Campuran'].map((jenis) => (
-                    <label
-                      key={jenis}
-                      className={`relative px-3 py-1.5 rounded-md text-sm font-medium transition-colors cursor-pointer ${
-                        selectedJenisRegu === jenis
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white border border-blue-300 text-blue-600 hover:bg-blue-50'
-                      }`}
+        {/* Filters and Controls */}
+        <FilterSection
+          groups={[
+            {
+              label: 'Kelas',
+              children: (
+                <>
+                  {['Master - 20m', 'Master - 30m'].map((kelas) => (
+                    <FilterButton
+                      key={kelas}
+                      active={selectedKelas === kelas}
+                      onClick={() => setSelectedKelas(kelas)}
                     >
-                      <input
-                        type="radio"
-                        name="jenis-regu"
-                        value={jenis}
-                        checked={selectedJenisRegu === jenis}
-                        onChange={() => setSelectedJenisRegu(jenis)}
-                        className="sr-only"
-                      />
-                      {jenis}
-                    </label>
+                      {kelas}
+                    </FilterButton>
                   ))}
-                </div>
-              </fieldset>
-            </div>
-
-            {/* Right Side - Controls */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                </>
+              )
+            },
+            {
+              label: 'Jenis Regu',
+              children: (
+                <>
+                  {['Individu Putra', 'Individu Putri', 'Beregu Putra', 'Beregu Putri', 'Beregu Campuran'].map((jenis) => (
+                    <FilterButton
+                      key={jenis}
+                      active={selectedJenisRegu === jenis}
+                      onClick={() => setSelectedJenisRegu(jenis)}
+                    >
+                      {jenis}
+                    </FilterButton>
+                  ))}
+                </>
+              )
+            }
+          ]}
+          actions={
+            <>
               {/* Babak Eliminasi Status */}
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Babak Eliminasi</span>
@@ -520,10 +467,8 @@ export function ScoringQualification({ onBack }: Readonly<ScoringQualificationPr
 
               {/* Search */}
               <div className="relative">
-                <label htmlFor="search-input" className="sr-only">Cari peserta</label>
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
-                  id="search-input"
                   type="text"
                   placeholder="Cari peserta"
                   value={searchTerm}
@@ -542,263 +487,38 @@ export function ScoringQualification({ onBack }: Readonly<ScoringQualificationPr
                   Batalkan Bagan Eliminasi
                 </Button>
               </div>
-            </div>
-          </div>
-        </div>
+            </>
+          }
+        />
 
         {/* Main Scoring Table */}
         <div className={`grid ${isDetailExpanded ? 'grid-cols-2 gap-6' : 'grid-cols-1'}`}>
           {/* Main Table Column */}
           <div className="w-full">
-            <Card>
-              <CardContent className="p-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-200 bg-gray-50">
-                        <th className="text-center py-3 px-2 text-xs font-medium text-gray-700 w-8">🎯</th>
-                        <th className="text-center py-3 px-2 text-xs font-medium text-gray-700 w-8">🏆</th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-gray-700 min-w-[150px]">Nama Peserta</th>
-                        <th className="text-left py-3 px-4 text-xs font-medium text-gray-700 min-w-[120px]">Klub</th>
-                        <th className="text-center py-3 px-3 text-xs font-medium text-gray-700 w-16">Sesi 1</th>
-                        <th className="text-center py-3 px-3 text-xs font-medium text-gray-700 w-16">Sesi 2</th>
-                        <th className="text-center py-3 px-3 text-xs font-medium text-gray-700 w-20">Jumlah Panah</th>
-                        <th className="text-center py-3 px-3 text-xs font-medium text-gray-700 w-16">Total</th>
-                        <th className="text-center py-3 px-3 text-xs font-medium text-gray-700 w-16">X+10</th>
-                        <th className="text-center py-3 px-3 text-xs font-medium text-gray-700 w-12">X</th>
-                        <th className="text-center py-3 px-2 text-xs font-medium text-gray-700 w-12">
-                          <input
-                            type="checkbox"
-                            checked={isAllSelected}
-                            ref={checkbox => {
-                              if (checkbox) checkbox.indeterminate = isIndeterminate;
-                            }}
-                            onChange={(e) => e.target.checked ? onSelectAllChecked() : onSelectAllUnchecked()}
-                            className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                          />
-                        </th>
-                        <th className="text-center py-3 px-2 text-xs font-medium text-gray-700 w-8"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {filteredParticipants.map((participant) => (
-                        <tr 
-                          key={participant.position} 
-                          className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                            selectedParticipant?.position === participant.position ? 'bg-blue-50' : ''
-                          }`}
-                        >
-                          <td className="py-3 px-2 text-center text-xs text-gray-600">
-                            {participant.position}
-                          </td>
-                          <td className="py-3 px-2 text-center text-xs font-medium text-gray-900">
-                            {participant.rank}
-                          </td>
-                          <td 
-                            className="py-3 px-4 text-xs font-medium text-gray-900 cursor-pointer"
-                            onClick={() => handleParticipantClick(participant)}
-                          >
-                            {participant.name}
-                          </td>
-                          <td 
-                            className="py-3 px-4 text-xs text-gray-600 cursor-pointer"
-                            onClick={() => handleParticipantClick(participant)}
-                          >
-                            {participant.club}
-                          </td>
-                          <td 
-                            className="py-3 px-3 text-center text-xs text-gray-900 cursor-pointer"
-                            onClick={() => handleParticipantClick(participant)}
-                          >
-                            {participant.sesi1}
-                          </td>
-                          <td 
-                            className="py-3 px-3 text-center text-xs text-gray-900 cursor-pointer"
-                            onClick={() => handleParticipantClick(participant)}
-                          >
-                            {participant.sesi2}
-                          </td>
-                          <td 
-                            className="py-3 px-3 text-center text-xs text-gray-900 cursor-pointer"
-                            onClick={() => handleParticipantClick(participant)}
-                          >
-                            {participant.jumlahPanah}
-                          </td>
-                          <td 
-                            className="py-3 px-3 text-center text-xs font-medium text-gray-900 cursor-pointer"
-                            onClick={() => handleParticipantClick(participant)}
-                          >
-                            {participant.total}
-                          </td>
-                          <td 
-                            className="py-3 px-3 text-center text-xs text-gray-900 cursor-pointer"
-                            onClick={() => handleParticipantClick(participant)}
-                          >
-                            {participant.x10}
-                          </td>
-                          <td 
-                            className="py-3 px-3 text-center text-xs text-gray-900 cursor-pointer"
-                            onClick={() => handleParticipantClick(participant)}
-                          >
-                            {participant.x}
-                          </td>
-                          <td className="py-3 px-2 text-center">
-                            <input
-                              type="checkbox"
-                              checked={selectedParticipants.has(participant.position)}
-                              onChange={(e) => e.target.checked 
-                                ? onParticipantChecked(participant.position)() 
-                                : onParticipantUnchecked(participant.position)()}
-                              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                          </td>
-                          <td className="py-3 px-2 text-center">
-                            <button
-                              onClick={() => handleParticipantClick(participant)}
-                              className="p-1 hover:bg-gray-200 rounded transition-colors"
-                              aria-label={selectedParticipant?.position === participant.position ? "Close details" : "View details"}
-                            >
-                              {selectedParticipant?.position === participant.position ? (
-                                <X className="w-4 h-4 text-blue-600" />
-                              ) : (
-                                <ChevronRight className="w-4 h-4 text-gray-400" />
-                              )}
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </CardContent>
-            </Card>
+            <QualificationTable
+              participants={filteredParticipants}
+              selectedParticipants={selectedParticipants}
+              onParticipantSelect={handleParticipantSelect}
+              onSelectAll={handleSelectAll}
+              onParticipantClick={handleParticipantClick}
+              selectedParticipant={selectedParticipant}
+            />
           </div>
 
           {/* Detail Column */}
           {isDetailExpanded && selectedParticipant && (
             <div className="w-full">
-              <Card>
-                <CardContent className="p-0">
-                  {/* Detail Header */}
-                  <div className="p-4 border-b border-gray-200 bg-gray-50">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium text-gray-900">{selectedParticipant.name}</h3>
-                        <p className="text-sm text-gray-600">{selectedParticipant.club}</p>
-                        <div className="flex items-center space-x-4 mt-2">
-                          <span className="text-sm text-gray-600">Total</span>
-                          <span className="text-sm text-gray-600">Akumulasi Skor</span>
-                          <span className="text-lg font-bold text-blue-600">{selectedParticipant.total}</span>
-                        </div>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleCloseDetail}
-                        className="p-1"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-
-                  {/* Session Tabs */}
-                  <div className="border-b border-gray-200">
-                    <nav className="flex">
-                      {[
-                        { id: 'session1', label: 'Sesi 1' },
-                        { id: 'session2', label: 'Sesi 2' },
-                        { id: 'shootoff', label: 'Shoot-off' }
-                      ].map((session) => (
-                        <button
-                          key={session.id}
-                          onClick={() => setActiveSession(session.id as any)}
-                          className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                            activeSession === session.id
-                              ? 'border-blue-500 text-blue-600 bg-blue-50'
-                              : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                          }`}
-                        >
-                          {session.label}
-                        </button>
-                      ))}
-                    </nav>
-                  </div>
-
-                  {/* Scoring Detail */}
-                  <div className="p-4">
-                    <div className="overflow-x-auto">
-                      <table className="w-full">
-                        <thead>
-                          <tr className="border-b border-gray-200">
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-12">End</th>
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-12">Shot</th>
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-8">1</th>
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-8">2</th>
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-8">3</th>
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-8">4</th>
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-8">5</th>
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-8">6</th>
-                            <th className="text-center py-2 px-2 text-xs font-medium text-gray-700 w-16">Total</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {scoringDetails.map((detail, index) => (
-                            <tr key={`${detail.end}-${detail.shot}`} className="border-b border-gray-100">
-                              <td className="py-2 px-2 text-center text-xs text-gray-900">
-                                {detail.end}
-                              </td>
-                              <td className="py-2 px-2 text-center text-xs font-medium text-blue-600">
-                                {detail.shot}
-                              </td>
-                              {detail.arrows.map((arrow, arrowIndex) => (
-                                <td key={`${detail.end}-${detail.shot}-arrow-${arrowIndex + 1}`} className="py-2 px-2 text-center">
-                                  <Input
-                                    type="text"
-                                    value={arrow}
-                                    onChange={(e) => handleScoreInput(index, arrowIndex, e.target.value)}
-                                    className="w-8 h-6 text-xs text-center border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-                                  />
-                                </td>
-                              ))}
-                              <td className="py-2 px-2 text-center text-xs font-medium text-gray-900">
-                                {detail.total}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-
-                    {/* Session Summary */}
-                    <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-                      <div className="flex justify-between items-center text-sm">
-                        <div className="flex space-x-4">
-                          <span>X+10: <strong>27</strong></span>
-                          <span>X: <strong>15</strong></span>
-                        </div>
-                        <div>
-                          <span>Total: <strong>349</strong></span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+              <ScoringDetailPanel
+                participant={selectedParticipant}
+                onClose={handleCloseDetail}
+              />
             </div>
           )}
         </div>
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-white border-t border-gray-200 py-4 sm:py-6 mt-auto">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] text-center">
-          <p className="text-xs sm:text-sm text-gray-600">
-            2025 © MyArchery. Designed & Developed by Reka Cipta Digital
-          </p>
-        </div>
-      </footer>
+      <PageFooter />
     </div>
   );
 }

@@ -28,14 +28,17 @@ const headingVariants = cva(
   }
 )
 
+type HeadingElement = HTMLHeadingElement
 type HeadingVariants = VariantProps<typeof headingVariants>
 
-interface HeadingProps extends Omit<React.HTMLAttributes<HTMLHeadingElement>, 'color'>, HeadingVariants {
+interface HeadingProps extends Omit<React.HTMLAttributes<HeadingElement>, keyof HeadingVariants> {
   as?: "h1" | "h2" | "h3" | "h4" | "h5" | "h6"
+  level?: HeadingVariants['level']
+  color?: HeadingVariants['color']
 }
 
-const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
-  ({ className, level = 1, color, as, ...props }, ref) => {
+const Heading = React.forwardRef<HeadingElement, HeadingProps>(
+  ({ className, level = 1, color = "default", as, ...props }, ref) => {
     const Component = as || (`h${level}` as keyof JSX.IntrinsicElements)
     
     return React.createElement(

@@ -23,9 +23,16 @@ interface EventDetailProps {
   onPengaturanAcaraClick?: () => void;
   onPesertaIndividuClick?: () => void;
   onPertandinganClick?: () => void;
+  onSertifikatClick?: () => void;
 }
 
-export function EventDetail({ onBack, onPengaturanAcaraClick, onPesertaIndividuClick, onPertandinganClick }: EventDetailProps) {
+export function EventDetail({ 
+  onBack, 
+  onPengaturanAcaraClick, 
+  onPesertaIndividuClick, 
+  onPertandinganClick,
+  onSertifikatClick 
+}: EventDetailProps) {
   const [copiedUrl, setCopiedUrl] = useState(false);
 
   const handleCopyUrl = async () => {
@@ -45,6 +52,8 @@ export function EventDetail({ onBack, onPengaturanAcaraClick, onPesertaIndividuC
       onPesertaIndividuClick();
     } else if (menuId === 'pertandingan' && onPertandinganClick) {
       onPertandinganClick();
+    } else if (menuId === 'sertifikat' && onSertifikatClick) {
+      onSertifikatClick();
     }
   };
 
@@ -193,22 +202,21 @@ export function EventDetail({ onBack, onPengaturanAcaraClick, onPesertaIndividuC
           </div>
         </div>
 
-        {/* Menu Grid - Fixed card size 365x245px */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {/* Menu Grid - Responsive with Consistent Spacing */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
           {menuItems.map((item) => (
             <Card 
               key={item.id}
-              className="hover:shadow-lg transition-shadow duration-200 cursor-pointer group"
-              style={{ width: '365px', height: '245px' }}
+              className="hover:shadow-lg transition-all duration-200 cursor-pointer group h-full"
               onClick={() => handleMenuClick(item.id)}
             >
-              <CardContent className="p-6 h-full flex flex-col">
+              <CardContent className="p-4 sm:p-6 h-full flex flex-col">
                 {/* Header with status badge */}
-                <div className="flex items-start justify-between mb-6">
+                <div className="flex items-start justify-between mb-4 min-h-[24px]">
                   {item.status && (
                     <Badge 
                       variant="outline"
-                      className={`text-xs px-3 py-1 font-medium border ${item.statusColor}`}
+                      className={`text-xs px-2 sm:px-3 py-1 font-medium border ${item.statusColor}`}
                     >
                       {item.statusText}
                     </Badge>
@@ -217,23 +225,23 @@ export function EventDetail({ onBack, onPengaturanAcaraClick, onPesertaIndividuC
                 </div>
 
                 {/* Icon */}
-                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-                  <item.icon className="w-8 h-8 text-gray-600" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 flex-shrink-0">
+                  <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-gray-600" />
                 </div>
 
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
                   {item.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-sm text-gray-600 mb-6 flex-1 leading-relaxed">
+                <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6 flex-1 leading-relaxed line-clamp-3">
                   {item.description}
                 </p>
 
                 {/* Footer with arrow */}
                 <div className="flex justify-end mt-auto">
-                  <ArrowRight className="w-6 h-6 text-blue-600 group-hover:text-blue-700 transition-colors" />
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 group-hover:text-blue-700 transition-colors" />
                 </div>
               </CardContent>
             </Card>

@@ -42,14 +42,19 @@ const textVariants = cva(
   }
 )
 
+type TextElement = HTMLParagraphElement
 type TextVariants = VariantProps<typeof textVariants>
 
-interface TextProps extends Omit<React.HTMLAttributes<HTMLParagraphElement>, 'color'>, TextVariants {
+interface TextProps extends Omit<React.HTMLAttributes<TextElement>, keyof TextVariants> {
   as?: "p" | "span" | "div" | "label"
+  size?: TextVariants['size']
+  weight?: TextVariants['weight']
+  color?: TextVariants['color']
+  align?: TextVariants['align']
 }
 
-const Text = React.forwardRef<HTMLParagraphElement, TextProps>(
-  ({ className, size, weight, color, align, as = "p", ...props }, ref) => {
+const Text = React.forwardRef<TextElement, TextProps>(
+  ({ className, size = "base", weight = "normal", color = "default", align = "left", as = "p", ...props }, ref) => {
     const Component = as
     
     return React.createElement(

@@ -6,10 +6,12 @@ import { IdCardDesigner } from '@/components/IdCardDesigner';
 import { ParticipantDetails } from '@/components/ParticipantDetails';
 import { ScoringQualification } from '@/components/ScoringQualification';
 import { ScoringEliminasi } from '@/components/ScoringEliminasi';
+import { CertificatePage } from '@/components/CertificatePage';
+import { DocumentsPage } from '@/components/DocumentsPage';
 import { LoginPage } from '@/components/LoginPage';
 import { Toaster } from '@/components/ui/toaster';
 
-type CurrentPage = 'login' | 'dashboard' | 'event-detail' | 'bantalan-settings' | 'id-card-designer' | 'participant-details' | 'scoring-qualification' | 'scoring-eliminasi';
+type CurrentPage = 'login' | 'dashboard' | 'event-detail' | 'bantalan-settings' | 'id-card-designer' | 'participant-details' | 'scoring-qualification' | 'scoring-eliminasi' | 'certificate' | 'documents';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
@@ -25,13 +27,69 @@ function App() {
     );
   }
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    setCurrentPage('login');
+  };
+
+  const handleNavigateToDashboard = () => {
+    setCurrentPage('dashboard');
+  };
+
+  const handleScoringNavigation = (page: string) => {
+    switch (page) {
+      case 'scoring-kualifikasi':
+        setCurrentPage('scoring-qualification');
+        break;
+      case 'scoring-eliminasi':
+        setCurrentPage('scoring-eliminasi');
+        break;
+      case 'dokumen':
+        setCurrentPage('documents');
+        break;
+      default:
+        break;
+    }
+  };
+
   // Handle page navigation
   const renderCurrentPage = () => {
     switch (currentPage) {
+      case 'documents':
+        return (
+          <DocumentsPage 
+            onBack={() => setCurrentPage('event-detail')}
+            onNavigate={handleScoringNavigation}
+            onLogout={handleLogout}
+            onDashboard={handleNavigateToDashboard}
+          />
+        );
+      case 'certificate':
+        return (
+          <CertificatePage 
+            onBack={() => setCurrentPage('event-detail')}
+            onLogout={handleLogout}
+            onDashboard={handleNavigateToDashboard}
+          />
+        );
       case 'scoring-eliminasi':
-        return <ScoringEliminasi onBack={() => setCurrentPage('event-detail')} />;
+        return (
+          <ScoringEliminasi 
+            onBack={() => setCurrentPage('event-detail')}
+            onNavigate={handleScoringNavigation}
+            onLogout={handleLogout}
+            onDashboard={handleNavigateToDashboard}
+          />
+        );
       case 'scoring-qualification':
-        return <ScoringQualification onBack={() => setCurrentPage('event-detail')} />;
+        return (
+          <ScoringQualification 
+            onBack={() => setCurrentPage('event-detail')}
+            onNavigate={handleScoringNavigation}
+            onLogout={handleLogout}
+            onDashboard={handleNavigateToDashboard}
+          />
+        );
       case 'participant-details':
         return <ParticipantDetails onBack={() => setCurrentPage('event-detail')} />;
       case 'id-card-designer':
@@ -50,6 +108,7 @@ function App() {
             onPengaturanAcaraClick={() => setCurrentPage('bantalan-settings')}
             onPesertaIndividuClick={() => setCurrentPage('participant-details')}
             onPertandinganClick={() => setCurrentPage('scoring-qualification')}
+            onSertifikatClick={() => setCurrentPage('certificate')}
           />
         );
       case 'dashboard':
