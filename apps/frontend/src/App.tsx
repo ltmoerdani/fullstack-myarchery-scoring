@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import { Dashboard } from '@/components/Dashboard';
 import { EventDetail } from '@/components/EventDetail';
 import { BantalanSettings } from '@/components/BantalanSettings';
@@ -16,7 +17,7 @@ import { Toaster } from '@/components/ui/toaster';
 
 type CurrentPage = 'login' | 'dashboard' | 'event-detail' | 'bantalan-settings' | 'id-card-designer' | 'participant-details' | 'scoring-qualification' | 'scoring-eliminasi' | 'certificate' | 'documents' | 'dos' | 'create-event' | 'live-score';
 
-function App() {
+function AppContent() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [currentPage, setCurrentPage] = useState<CurrentPage>('dashboard');
 
@@ -165,6 +166,14 @@ function App() {
       {renderCurrentPage()}
       <Toaster />
     </>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

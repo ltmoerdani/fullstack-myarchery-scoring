@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { 
   Target,
   User,
@@ -206,38 +207,41 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
       case 'Lunas':
-        return 'bg-green-100 text-green-800 border-green-200';
+        return 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800';
       case 'Belum Lunas':
-        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:border-yellow-800';
       case 'Expired':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800';
       case 'Gagal':
-        return 'bg-red-100 text-red-800 border-red-200';
+        return 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800';
       case 'Refund':
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800';
       default:
-        return 'bg-gray-100 text-gray-800 border-gray-200';
+        return 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-400 dark:border-gray-800';
     }
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
+    <div className="min-h-screen w-full content-bg flex flex-col theme-transition">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
+      <header className="header-bg sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-gray-900">myarchery.id</span>
+            <span className="text-lg sm:text-xl font-bold text-foreground">myarchery.id</span>
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <div className="flex items-center space-x-2 text-gray-600">
+            <ThemeToggle />
+            
+            <div className="flex items-center space-x-2 text-muted-foreground">
               <User className="w-4 h-4" />
               <span className="text-sm hidden sm:inline">Pro Archery</span>
             </div>
-            <Button variant="ghost" size="sm" className="text-gray-600 p-2">
+            
+            <Button variant="ghost" size="sm" className="text-muted-foreground p-2 hover:text-destructive transition-colors hover-bg">
               <LogOut className="w-4 h-4" />
               <span className="hidden md:inline ml-2">Logout</span>
             </Button>
@@ -253,24 +257,24 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
             <Button 
               variant="ghost" 
               onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-gray-800 p-0"
+              className="flex items-center space-x-2 text-muted-foreground hover:text-foreground p-0 hover-bg"
             >
               <ArrowLeft className="w-4 h-4" />
             </Button>
-            <h1 className="text-xl sm:text-2xl font-semibold text-gray-900">Peserta Individu</h1>
+            <h1 className="text-xl sm:text-2xl font-semibold text-foreground">Peserta Individu</h1>
           </div>
         </div>
 
         {/* Category Tabs */}
         <div className="mb-6">
-          <div className="border-b border-gray-200">
+          <div className="border-b border-border">
             <nav className="flex space-x-8">
               <button
                 onClick={() => setActiveTab('barebow')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'barebow'
-                    ? 'border-orange-500 text-orange-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                 }`}
               >
                 Barebow
@@ -279,8 +283,8 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
                 onClick={() => setActiveTab('compound')}
                 className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'compound'
-                    ? 'border-orange-500 text-orange-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                    ? 'border-primary text-primary'
+                    : 'border-transparent text-muted-foreground hover:text-foreground hover:border-border'
                 }`}
               >
                 Compound
@@ -296,13 +300,13 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
             <div className="space-y-4">
               {/* Kelas Filter */}
               <div className="flex items-center space-x-3">
-                <label className="text-sm font-medium text-gray-700 w-20">
+                <label className="text-sm font-medium text-foreground w-20">
                   Kelas:
                 </label>
                 <select
                   value={selectedKelas}
                   onChange={(e) => setSelectedKelas(e.target.value)}
-                  className="px-3 py-1.5 border border-blue-300 rounded-md text-sm bg-white text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 min-w-[140px]"
+                  className="px-3 py-1.5 border border-input rounded-md text-sm bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring min-w-[140px] theme-transition"
                 >
                   <option value="Master - 20m">Master - 20m</option>
                   <option value="Master - 30m">Master - 30m</option>
@@ -313,7 +317,7 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
 
               {/* Jenis Regu Filter */}
               <div className="flex items-start space-x-3">
-                <label className="text-sm font-medium text-gray-700 w-20 pt-1.5">
+                <label className="text-sm font-medium text-foreground w-20 pt-1.5">
                   Jenis Regu:
                 </label>
                 <div className="flex space-x-2">
@@ -321,8 +325,8 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
                     onClick={() => setSelectedJenisRegu('Individu Putra')}
                     className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                       selectedJenisRegu === 'Individu Putra'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-white border border-blue-300 text-blue-600 hover:bg-blue-50'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-background border border-input text-foreground hover:bg-muted'
                     }`}
                   >
                     Individu Putra
@@ -331,8 +335,8 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
                     onClick={() => setSelectedJenisRegu('Individu Putri')}
                     className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                       selectedJenisRegu === 'Individu Putri'
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-white border border-blue-300 text-blue-600 hover:bg-blue-50'
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-background border border-input text-foreground hover:bg-muted'
                     }`}
                   >
                     Individu Putri
@@ -342,7 +346,7 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
 
               {/* Status Pembayaran Filter */}
               <div className="flex items-start space-x-3">
-                <label className="text-sm font-medium text-gray-700 w-20 pt-1.5">
+                <label className="text-sm font-medium text-foreground w-20 pt-1.5">
                   Status Pembayaran:
                 </label>
                 <div className="flex flex-wrap gap-2 max-w-md">
@@ -352,8 +356,8 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
                       onClick={() => setSelectedStatusPembayaran(status as any)}
                       className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
                         selectedStatusPembayaran === status
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white border border-blue-300 text-blue-600 hover:bg-blue-50'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-background border border-input text-foreground hover:bg-muted'
                       }`}
                     >
                       {status}
@@ -367,7 +371,7 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
             <div className="flex justify-end lg:justify-start lg:items-start">
               <Button
                 onClick={handleDownloadIdCard}
-                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center space-x-2"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center space-x-2"
               >
                 <Download className="w-4 h-4" />
                 <span>Unduh ID Card</span>
@@ -377,51 +381,51 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
         </div>
 
         {/* Participants Table */}
-        <Card>
+        <Card className="shadow-theme">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-700 w-16">
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="text-left py-4 px-4 text-sm font-medium text-foreground w-16">
                       No.
                     </th>
-                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-700 min-w-[200px]">
+                    <th className="text-left py-4 px-4 text-sm font-medium text-foreground min-w-[200px]">
                       Nama Peserta
                     </th>
-                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-700 min-w-[180px]">
+                    <th className="text-left py-4 px-4 text-sm font-medium text-foreground min-w-[180px]">
                       Klub
                     </th>
-                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-700 min-w-[200px]">
+                    <th className="text-left py-4 px-4 text-sm font-medium text-foreground min-w-[200px]">
                       Email
                     </th>
-                    <th className="text-left py-4 px-4 text-sm font-medium text-gray-700 min-w-[120px]">
+                    <th className="text-left py-4 px-4 text-sm font-medium text-foreground min-w-[120px]">
                       Telepon
                     </th>
-                    <th className="text-center py-4 px-4 text-sm font-medium text-gray-700 min-w-[140px]">
+                    <th className="text-center py-4 px-4 text-sm font-medium text-foreground min-w-[140px]">
                       Status Pembayaran
                     </th>
-                    <th className="text-center py-4 px-4 text-sm font-medium text-gray-700 w-32">
+                    <th className="text-center py-4 px-4 text-sm font-medium text-foreground w-32">
                       Aksi
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredParticipants.map((participant) => (
-                    <tr key={participant.no} className="border-b border-gray-100 hover:bg-gray-50">
-                      <td className="py-4 px-4 text-sm text-gray-900">
+                    <tr key={participant.no} className="border-b border-border hover:bg-muted/30 transition-colors">
+                      <td className="py-4 px-4 text-sm text-foreground">
                         {participant.no}.
                       </td>
-                      <td className="py-4 px-4 text-sm text-gray-900 font-medium">
+                      <td className="py-4 px-4 text-sm text-foreground font-medium">
                         {participant.namaPeserta}
                       </td>
-                      <td className="py-4 px-4 text-sm text-gray-600">
+                      <td className="py-4 px-4 text-sm text-muted-foreground">
                         {participant.klub}
                       </td>
-                      <td className="py-4 px-4 text-sm text-gray-600">
+                      <td className="py-4 px-4 text-sm text-muted-foreground">
                         {participant.email}
                       </td>
-                      <td className="py-4 px-4 text-sm text-gray-600">
+                      <td className="py-4 px-4 text-sm text-muted-foreground">
                         {participant.telepon}
                       </td>
                       <td className="py-4 px-4 text-center">
@@ -437,7 +441,7 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
                           variant="outline"
                           size="sm"
                           onClick={() => handleAturKategori(participant.no)}
-                          className="text-blue-600 border-blue-300 hover:bg-blue-50 text-xs px-3 py-1"
+                          className="text-primary border-primary hover:bg-primary/10 text-xs px-3 py-1 hover-bg"
                         >
                           Atur Kategori
                         </Button>
@@ -451,7 +455,7 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
             {/* Empty State */}
             {filteredParticipants.length === 0 && (
               <div className="py-12 text-center">
-                <p className="text-gray-500 text-sm">
+                <p className="text-muted-foreground text-sm">
                   Tidak ada peserta yang sesuai dengan filter yang dipilih
                 </p>
               </div>
@@ -461,9 +465,9 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-white border-t border-gray-200 py-4 sm:py-6 mt-auto">
+      <footer className="w-full bg-card border-t border-border py-4 sm:py-6 mt-auto theme-transition">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] text-center">
-          <p className="text-xs sm:text-sm text-gray-600">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             2025 © MyArchery. Designed & Developed by Reka Cipta Digital
           </p>
         </div>

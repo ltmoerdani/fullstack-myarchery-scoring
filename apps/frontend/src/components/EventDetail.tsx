@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { 
   ArrowLeft,
   ArrowRight,
@@ -77,7 +78,7 @@ export function EventDetail({
       icon: Target,
       status: 'published',
       statusText: 'Terpublikasi',
-      statusColor: 'bg-green-100 text-green-800 border-green-200'
+      statusColor: 'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800'
     },
     {
       id: 'pengaturan-acara',
@@ -95,7 +96,7 @@ export function EventDetail({
       icon: User,
       status: 'count',
       statusText: 'Peserta Individu:65',
-      statusColor: 'bg-blue-100 text-blue-800 border-blue-200'
+      statusColor: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800'
     },
     {
       id: 'peserta-beregu',
@@ -104,7 +105,7 @@ export function EventDetail({
       icon: Users,
       status: 'count',
       statusText: 'Peserta Beregu:0',
-      statusColor: 'bg-blue-100 text-blue-800 border-blue-200'
+      statusColor: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800'
     },
     {
       id: 'pertandingan',
@@ -145,9 +146,9 @@ export function EventDetail({
   ];
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
+    <div className="min-h-screen w-full content-bg flex flex-col theme-transition">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
+      <header className="header-bg sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <button 
@@ -163,15 +164,18 @@ export function EventDetail({
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <div className="flex items-center space-x-2 text-gray-600">
+            <ThemeToggle />
+            
+            <div className="flex items-center space-x-2 text-muted-foreground">
               <User className="w-4 h-4" />
               <span className="text-sm hidden sm:inline">Pro Archery</span>
             </div>
+            
             <Button 
               variant="ghost" 
               size="sm" 
               onClick={onBack}
-              className="text-gray-600 p-2 hover:text-red-600 transition-colors"
+              className="text-muted-foreground p-2 hover:text-destructive transition-colors hover-bg"
             >
               <LogOut className="w-4 h-4" />
               <span className="hidden md:inline ml-2">Logout</span>
@@ -185,11 +189,11 @@ export function EventDetail({
         {/* Page Header */}
         <div className="mb-6 sm:mb-8">
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">PRO MASTER GAMES</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground">PRO MASTER GAMES</h1>
             <Button 
               variant="ghost" 
               onClick={onBack}
-              className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
+              className="flex items-center space-x-2 text-primary hover:text-primary/80 hover-bg"
             >
               <ArrowLeft className="w-4 h-4" />
               <span className="hidden sm:inline">Ke Beranda</span>
@@ -198,18 +202,18 @@ export function EventDetail({
 
           {/* URL Section */}
           <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-            <div className="flex items-center space-x-2 bg-gray-100 rounded-lg px-3 py-2 flex-1 max-w-md">
-              <span className="text-sm text-gray-600 truncate">https://myarchery.id/event/pro-master-games</span>
+            <div className="flex items-center space-x-2 bg-muted rounded-lg px-3 py-2 flex-1 max-w-md">
+              <span className="text-sm text-muted-foreground truncate">https://myarchery.id/event/pro-master-games</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={handleCopyUrl}
-                className="p-1 h-auto"
+                className="p-1 h-auto hover-bg"
               >
                 {copiedUrl ? (
                   <CheckCircle className="w-4 h-4 text-green-600" />
                 ) : (
-                  <Copy className="w-4 h-4 text-gray-500" />
+                  <Copy className="w-4 h-4 text-muted-foreground" />
                 )}
               </Button>
             </div>
@@ -218,7 +222,7 @@ export function EventDetail({
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="text-sm"
+                className="text-sm hover-bg"
                 onClick={handleDOSClick}
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
@@ -227,7 +231,7 @@ export function EventDetail({
               <Button 
                 variant="outline" 
                 size="sm" 
-                className="text-sm"
+                className="text-sm hover-bg"
                 onClick={handleLiveScoreClick}
               >
                 <Monitor className="w-4 h-4 mr-2" />
@@ -242,7 +246,7 @@ export function EventDetail({
           {menuItems.map((item) => (
             <Card 
               key={item.id}
-              className="hover:shadow-lg transition-all duration-200 cursor-pointer group h-full"
+              className="hover:shadow-lg transition-all duration-200 cursor-pointer group h-full card-hover shadow-theme"
               onClick={() => handleMenuClick(item.id)}
             >
               <CardContent className="p-4 sm:p-6 h-full flex flex-col">
@@ -260,23 +264,23 @@ export function EventDetail({
                 </div>
 
                 {/* Icon */}
-                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4 flex-shrink-0">
-                  <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-gray-600" />
+                <div className="w-12 h-12 sm:w-16 sm:h-16 bg-muted rounded-full flex items-center justify-center mb-4 flex-shrink-0">
+                  <item.icon className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground" />
                 </div>
 
                 {/* Title */}
-                <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                <h3 className="text-base sm:text-lg lg:text-xl font-semibold text-foreground mb-3 line-clamp-2">
                   {item.title}
                 </h3>
 
                 {/* Description */}
-                <p className="text-xs sm:text-sm text-gray-600 mb-4 sm:mb-6 flex-1 leading-relaxed line-clamp-3">
+                <p className="text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 flex-1 leading-relaxed line-clamp-3">
                   {item.description}
                 </p>
 
                 {/* Footer with arrow */}
                 <div className="flex justify-end mt-auto">
-                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 group-hover:text-blue-700 transition-colors" />
+                  <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-primary group-hover:text-primary/80 transition-colors" />
                 </div>
               </CardContent>
             </Card>
@@ -285,9 +289,9 @@ export function EventDetail({
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-white border-t border-gray-200 py-4 sm:py-6 mt-auto">
+      <footer className="w-full bg-card border-t border-border py-4 sm:py-6 mt-auto theme-transition">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] text-center">
-          <p className="text-xs sm:text-sm text-gray-600">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             2025 © MyArchery. Designed & Developed by Reka Cipta Digital
           </p>
         </div>

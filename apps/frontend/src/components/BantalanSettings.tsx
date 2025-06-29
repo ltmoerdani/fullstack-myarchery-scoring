@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { 
   Target,
   User,
@@ -94,27 +95,31 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
+    <div className="min-h-screen w-full content-bg flex flex-col theme-transition">
       {/* Sticky Header */}
-      <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
+      <header className="header-bg sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-red-600 rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
+              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
             </div>
-            <span className="text-lg sm:text-xl font-bold text-gray-900">myarchery.id</span>
+            <span className="text-lg sm:text-xl font-bold text-foreground">myarchery.id</span>
           </div>
           
           <div className="flex items-center space-x-2 sm:space-x-4">
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-gray-600 p-2">
+            <Button variant="ghost" size="sm" onClick={onBack} className="text-muted-foreground p-2 hover-bg">
               <ChevronLeft className="w-4 h-4" />
               <span className="hidden md:inline ml-2">Back</span>
             </Button>
-            <div className="flex items-center space-x-2 text-gray-600">
+            
+            <ThemeToggle />
+            
+            <div className="flex items-center space-x-2 text-muted-foreground">
               <User className="w-4 h-4" />
               <span className="text-sm hidden sm:inline">Pro Archery</span>
             </div>
-            <Button variant="ghost" size="sm" className="text-gray-600 p-2">
+            
+            <Button variant="ghost" size="sm" className="text-muted-foreground p-2 hover:text-destructive transition-colors hover-bg">
               <LogOut className="w-4 h-4" />
               <span className="hidden md:inline ml-2">Logout</span>
             </Button>
@@ -123,7 +128,7 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
       </header>
 
       {/* Navigation Tabs */}
-      <nav className="sticky top-[73px] z-40 w-full bg-blue-700">
+      <nav className="sticky top-[73px] z-40 w-full bg-primary">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px]">
           <div className="flex space-x-0 overflow-x-auto">
             {navigationTabs.map((tab) => (
@@ -132,8 +137,8 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
                 onClick={() => handleTabClick(tab.id)}
                 className={`flex items-center space-x-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors ${
                   tab.active || activeTab === tab.id
-                    ? 'bg-blue-600 text-white border-b-2 border-white'
-                    : 'text-blue-100 hover:text-white hover:bg-blue-600'
+                    ? 'bg-primary/80 text-primary-foreground border-b-2 border-primary-foreground'
+                    : 'text-primary-foreground/70 hover:text-primary-foreground hover:bg-primary/80'
                 }`}
               >
                 <tab.icon className="w-4 h-4" />
@@ -150,7 +155,7 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
         <div className="flex justify-end mb-6 space-x-3">
           <Button 
             variant="outline" 
-            className="text-blue-600 border-blue-600 hover:bg-blue-50"
+            className="text-primary border-primary hover:bg-primary/10 hover-bg"
           >
             Unduh Semua No. Bantalan Peserta
           </Button>
@@ -158,21 +163,21 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
 
         {/* Info Alert */}
         <div className="mb-6">
-          <div className="flex items-start space-x-3 bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-            <p className="text-sm text-blue-800">
+          <div className="flex items-start space-x-3 bg-primary/5 border border-primary/20 rounded-lg p-4">
+            <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-foreground">
               Pengaturan aktif apabila pendaftaran lomba telah ditutup
             </p>
           </div>
         </div>
 
         {/* Form Section */}
-        <Card className="mb-6">
+        <Card className="mb-6 shadow-theme">
           <CardContent className="p-6">
             <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between space-y-4 lg:space-y-0 lg:space-x-6">
               {/* Date Input */}
               <div className="flex-1 max-w-xs">
-                <Label htmlFor="bertandingTanggal" className="block text-sm font-medium text-gray-700 mb-2">
+                <Label htmlFor="bertandingTanggal" className="block text-sm font-medium text-foreground mb-2">
                   Tanggal Bertanding
                 </Label>
                 <Input
@@ -180,14 +185,14 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
                   type="text"
                   value={bertandingTanggal}
                   onChange={(e) => setBertandingTanggal(e.target.value)}
-                  className="w-full"
+                  className="w-full theme-transition"
                 />
               </div>
 
               {/* Download Button */}
               <Button 
                 variant="outline"
-                className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                className="text-primary border-primary hover:bg-primary/10 hover-bg"
               >
                 Unduh No. Bantalan Peserta
               </Button>
@@ -196,12 +201,12 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
               <div className="flex space-x-3">
                 <Button 
                   variant="outline"
-                  className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                  className="text-primary border-primary hover:bg-primary/10 hover-bg"
                 >
                   Ubah Bantalan Peserta
                 </Button>
                 <Button 
-                  className="bg-blue-600 hover:bg-blue-700 text-white"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   Terapkan
                 </Button>
@@ -211,37 +216,37 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
         </Card>
 
         {/* Table Section */}
-        <Card>
+        <Card className="shadow-theme">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-gray-200 bg-gray-50">
-                    <th className="text-left py-4 px-6 text-sm font-medium text-gray-700">
+                  <tr className="border-b border-border bg-muted/50">
+                    <th className="text-left py-4 px-6 text-sm font-medium text-foreground">
                       Kategori
                     </th>
-                    <th className="text-center py-4 px-4 text-sm font-medium text-gray-700">
+                    <th className="text-center py-4 px-4 text-sm font-medium text-foreground">
                       Awal Bantalan
                     </th>
-                    <th className="text-center py-4 px-4 text-sm font-medium text-gray-700">
+                    <th className="text-center py-4 px-4 text-sm font-medium text-foreground">
                       Akhir Bantalan
                     </th>
-                    <th className="text-center py-4 px-4 text-sm font-medium text-gray-700">
+                    <th className="text-center py-4 px-4 text-sm font-medium text-foreground">
                       Target Face
                     </th>
-                    <th className="text-center py-4 px-4 text-sm font-medium text-gray-700">
+                    <th className="text-center py-4 px-4 text-sm font-medium text-foreground">
                       Total Peserta
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   {bantalanData.map((data) => (
-                    <tr key={data.kategori} className="border-b border-gray-100 hover:bg-gray-50">
+                    <tr key={data.kategori} className="border-b border-border hover:bg-muted/30 transition-colors">
                       <td className="py-4 px-6">
-                        <div className="text-sm text-gray-900 font-medium">
+                        <div className="text-sm text-foreground font-medium">
                           Kategori
                         </div>
-                        <div className="text-sm text-gray-600 mt-1">
+                        <div className="text-sm text-muted-foreground mt-1">
                           {data.kategori}
                         </div>
                       </td>
@@ -250,7 +255,7 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
                           type="number"
                           value={data.awalBantalan}
                           onChange={(e) => handleAwalBantalanChange(data.kategori, parseInt(e.target.value) || 0)}
-                          className="w-full"
+                          className="w-full theme-transition"
                         />
                       </td>
                       <td className="py-4 px-4 text-center">
@@ -258,7 +263,7 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
                           type="number"
                           value={data.akhirBantalan}
                           onChange={(e) => handleAkhirBantalanChange(data.kategori, parseInt(e.target.value) || 0)}
-                          className="w-full"
+                          className="w-full theme-transition"
                         />
                       </td>
                       <td className="py-4 px-4 text-center">
@@ -266,11 +271,11 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
                           type="number"
                           value={data.targetFace}
                           onChange={(e) => handleTargetFaceChange(data.kategori, parseInt(e.target.value) || 0)}
-                          className="w-full"
+                          className="w-full theme-transition"
                         />
                       </td>
                       <td className="py-4 px-4 text-center">
-                        <span className="text-sm font-medium text-gray-900">
+                        <span className="text-sm font-medium text-foreground">
                           {data.totalPeserta}
                         </span>
                       </td>
@@ -284,9 +289,9 @@ export function BantalanSettings({ onIdCardClick, onBack }: Readonly<BantalanSet
       </main>
 
       {/* Footer */}
-      <footer className="w-full bg-white border-t border-gray-200 py-4 sm:py-6 mt-auto">
+      <footer className="w-full bg-card border-t border-border py-4 sm:py-6 mt-auto theme-transition">
         <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] text-center">
-          <p className="text-xs sm:text-sm text-gray-600">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             2025 © MyArchery. Designed & Developed by Reka Cipta Digital
           </p>
         </div>

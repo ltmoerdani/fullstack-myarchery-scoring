@@ -24,6 +24,16 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 213 94% 68%;
     --radius: 0.5rem;
+    
+    /* Custom theme variables */
+    --header-bg: 0 0% 100%;
+    --header-border: 214.3 31.8% 91.4%;
+    --sidebar-bg: 0 0% 100%;
+    --content-bg: 248 248 251;
+    --glass-bg: 0 0% 100% / 0.8;
+    --shadow-color: 0 0% 0% / 0.1;
+    --hover-bg: 210 40% 96%;
+    --active-bg: 213 94% 68% / 0.1;
   }
 
   .dark {
@@ -46,6 +56,16 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 213 94% 68%;
+    
+    /* Custom dark theme variables */
+    --header-bg: 222.2 84% 4.9%;
+    --header-border: 217.2 32.6% 17.5%;
+    --sidebar-bg: 222.2 84% 4.9%;
+    --content-bg: 217.2 32.6% 17.5%;
+    --glass-bg: 222.2 84% 4.9% / 0.8;
+    --shadow-color: 0 0% 0% / 0.3;
+    --hover-bg: 217.2 32.6% 17.5%;
+    --active-bg: 213 94% 68% / 0.2;
   }
 }
 
@@ -55,7 +75,7 @@
   }
   
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground transition-colors duration-300;
     font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-feature-settings: 'cv11', 'ss01';
     font-variation-settings: 'opsz' 32;
@@ -93,6 +113,13 @@
 
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground;
+  }
+
+  /* Theme transition for all elements */
+  * {
+    transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 200ms;
   }
 }
 
@@ -141,7 +168,7 @@
 
   /* Interactive states */
   .interactive {
-    @apply transition-colors duration-200 ease-in-out;
+    @apply transition-all duration-200 ease-in-out;
   }
 
   .interactive:hover {
@@ -155,7 +182,8 @@
 
   /* Glass morphism effect */
   .glass {
-    @apply bg-background/80 backdrop-blur-sm border border-border/50;
+    background: hsl(var(--glass-bg));
+    @apply backdrop-blur-sm border border-border/50;
   }
 
   /* Gradient backgrounds */
@@ -165,6 +193,15 @@
 
   .gradient-secondary {
     background: linear-gradient(135deg, hsl(var(--secondary)) 0%, hsl(var(--secondary) / 0.8) 100%);
+  }
+
+  /* Theme-aware shadows */
+  .shadow-theme {
+    box-shadow: 0 4px 6px -1px hsl(var(--shadow-color)), 0 2px 4px -1px hsl(var(--shadow-color));
+  }
+
+  .shadow-theme-lg {
+    box-shadow: 0 10px 15px -3px hsl(var(--shadow-color)), 0 4px 6px -2px hsl(var(--shadow-color));
   }
 
   /* Text truncation utilities */
@@ -187,6 +224,28 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+  }
+
+  /* Theme-specific component styles */
+  .header-bg {
+    background: hsl(var(--header-bg));
+    border-bottom: 1px solid hsl(var(--header-border));
+  }
+
+  .sidebar-bg {
+    background: hsl(var(--sidebar-bg));
+  }
+
+  .content-bg {
+    background: hsl(var(--content-bg));
+  }
+
+  .hover-bg {
+    @apply hover:bg-[hsl(var(--hover-bg))];
+  }
+
+  .active-bg {
+    background: hsl(var(--active-bg));
   }
 }
 
@@ -234,4 +293,75 @@
   .text-responsive-3xl {
     @apply text-3xl sm:text-4xl;
   }
+
+  /* Theme transition utilities */
+  .theme-transition {
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .theme-transition-fast {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .theme-transition-slow {
+    @apply transition-all duration-500 ease-in-out;
+  }
+}
+
+/* Dark mode specific adjustments */
+.dark {
+  color-scheme: dark;
+}
+
+.light {
+  color-scheme: light;
+}
+
+/* Ensure proper contrast for form elements */
+.dark input,
+.dark textarea,
+.dark select {
+  color-scheme: dark;
+}
+
+.light input,
+.light textarea,
+.light select {
+  color-scheme: light;
+}
+
+/* Animation keyframes */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-in-from-top {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes slide-in-from-bottom {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* Theme-aware selection */
+::selection {
+  background: hsl(var(--primary) / 0.3);
+  color: hsl(var(--primary-foreground));
+}
+
+/* Ensure images and media adapt to theme */
+.dark img:not([src*=".svg"]) {
+  filter: brightness(0.9) contrast(1.1);
+}
+
+/* Theme-aware borders */
+.border-theme {
+  border-color: hsl(var(--border));
+}
+
+.border-theme-muted {
+  border-color: hsl(var(--border) / 0.5);
 }

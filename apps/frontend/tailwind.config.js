@@ -49,6 +49,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Custom theme colors
+        'header-bg': "hsl(var(--header-bg))",
+        'header-border': "hsl(var(--header-border))",
+        'sidebar-bg': "hsl(var(--sidebar-bg))",
+        'content-bg': "hsl(var(--content-bg))",
+        'glass-bg': "hsl(var(--glass-bg))",
+        'shadow-color': "hsl(var(--shadow-color))",
+        'hover-bg': "hsl(var(--hover-bg))",
+        'active-bg': "hsl(var(--active-bg))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -83,6 +92,10 @@ export default {
           from: { transform: "translateY(100%)" },
           to: { transform: "translateY(0)" },
         },
+        "theme-transition": {
+          from: { opacity: "0.8" },
+          to: { opacity: "1" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -90,8 +103,40 @@ export default {
         "fade-in": "fade-in 0.2s ease-out",
         "slide-in-from-top": "slide-in-from-top 0.3s ease-out",
         "slide-in-from-bottom": "slide-in-from-bottom 0.3s ease-out",
+        "theme-transition": "theme-transition 0.3s ease-in-out",
+      },
+      boxShadow: {
+        'theme': '0 4px 6px -1px hsl(var(--shadow-color)), 0 2px 4px -1px hsl(var(--shadow-color))',
+        'theme-lg': '0 10px 15px -3px hsl(var(--shadow-color)), 0 4px 6px -2px hsl(var(--shadow-color))',
+        'theme-xl': '0 20px 25px -5px hsl(var(--shadow-color)), 0 10px 10px -5px hsl(var(--shadow-color))',
+      },
+      backdropBlur: {
+        'theme': '8px',
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    // Custom plugin for theme utilities
+    function({ addUtilities, theme }) {
+      const newUtilities = {
+        '.theme-transition': {
+          'transition-property': 'background-color, border-color, color, fill, stroke, box-shadow',
+          'transition-timing-function': 'cubic-bezier(0.4, 0, 0.2, 1)',
+          'transition-duration': '300ms',
+        },
+        '.theme-transition-fast': {
+          'transition-property': 'background-color, border-color, color, fill, stroke, box-shadow',
+          'transition-timing-function': 'cubic-bezier(0.4, 0, 0.2, 1)',
+          'transition-duration': '200ms',
+        },
+        '.theme-transition-slow': {
+          'transition-property': 'background-color, border-color, color, fill, stroke, box-shadow',
+          'transition-timing-function': 'cubic-bezier(0.4, 0, 0.2, 1)',
+          'transition-duration': '500ms',
+        },
+      }
+      addUtilities(newUtilities)
+    }
+  ],
 };

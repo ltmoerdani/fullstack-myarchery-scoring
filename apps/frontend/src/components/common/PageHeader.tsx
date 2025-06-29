@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { User, LogOut, ChevronLeft } from 'lucide-react';
 
 interface PageHeaderProps {
@@ -29,7 +30,7 @@ export function PageHeader({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-200">
+    <header className="header-bg sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60 theme-transition">
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <button 
@@ -46,28 +47,32 @@ export function PageHeader({
           </button>
           {title && (
             <>
-              <span className="text-gray-400">/</span>
-              <span className="text-lg font-medium text-gray-700">{title}</span>
+              <span className="text-muted-foreground">/</span>
+              <span className="text-lg font-medium text-foreground">{title}</span>
             </>
           )}
         </div>
         
         <div className="flex items-center space-x-2 sm:space-x-4">
           {showBackButton && onBack && (
-            <Button variant="ghost" size="sm" onClick={onBack} className="text-gray-600 p-2">
+            <Button variant="ghost" size="sm" onClick={onBack} className="text-muted-foreground p-2 hover-bg">
               <ChevronLeft className="w-4 h-4" />
               <span className="hidden md:inline ml-2">Back</span>
             </Button>
           )}
-          <div className="flex items-center space-x-2 text-gray-600">
+          
+          <ThemeToggle />
+          
+          <div className="flex items-center space-x-2 text-muted-foreground">
             <User className="w-4 h-4" />
             <span className="text-sm hidden sm:inline">Pro Archery</span>
           </div>
+          
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={handleLogout}
-            className="text-gray-600 p-2 hover:text-red-600 transition-colors"
+            className="text-muted-foreground p-2 hover:text-destructive transition-colors hover-bg"
           >
             <LogOut className="w-4 h-4" />
             <span className="hidden md:inline ml-2">Logout</span>

@@ -166,7 +166,7 @@ export function CreateEventPage({
   };
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
+    <div className="min-h-screen w-full content-bg flex flex-col theme-transition">
       {/* Header */}
       <PageHeader 
         title="Tambah Event Baru" 
@@ -180,7 +180,7 @@ export function CreateEventPage({
       <main className="flex-1 w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-6 sm:py-8">
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-8">
           {/* Event Basic Information */}
-          <Card>
+          <Card className="shadow-theme">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Target className="w-5 h-5" />
@@ -197,7 +197,7 @@ export function CreateEventPage({
                   id="eventName"
                   type="text"
                   placeholder="Masukkan nama event"
-                  className={`${errors.eventName ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                  className={`theme-transition ${errors.eventName ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                   {...register('eventName')}
                   disabled={isSubmitting}
                 />
@@ -219,7 +219,7 @@ export function CreateEventPage({
                       <Input
                         id="startDate"
                         type="date"
-                        className={`pl-10 ${errors.startDate ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                        className={`pl-10 theme-transition ${errors.startDate ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                         {...register('startDate')}
                         disabled={isSubmitting}
                       />
@@ -238,7 +238,7 @@ export function CreateEventPage({
                       <Input
                         id="startTime"
                         type="time"
-                        className={`pl-10 ${errors.startTime ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                        className={`pl-10 theme-transition ${errors.startTime ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                         {...register('startTime')}
                         disabled={isSubmitting}
                       />
@@ -260,7 +260,7 @@ export function CreateEventPage({
                       <Input
                         id="endDate"
                         type="date"
-                        className={`pl-10 ${errors.endDate ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                        className={`pl-10 theme-transition ${errors.endDate ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                         {...register('endDate')}
                         disabled={isSubmitting}
                       />
@@ -279,7 +279,7 @@ export function CreateEventPage({
                       <Input
                         id="endTime"
                         type="time"
-                        className={`pl-10 ${errors.endTime ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                        className={`pl-10 theme-transition ${errors.endTime ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                         {...register('endTime')}
                         disabled={isSubmitting}
                       />
@@ -292,10 +292,10 @@ export function CreateEventPage({
               </div>
 
               {/* Booking Close Settings */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
                 <div className="flex items-start space-x-3 mb-4">
-                  <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <div className="text-sm text-blue-800">
+                  <Info className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                  <div className="text-sm text-foreground">
                     <p className="font-medium mb-1">Booking Close Settings</p>
                     <p>Set custom booking close date/time. If left empty, booking will close when the event starts.</p>
                   </div>
@@ -311,7 +311,7 @@ export function CreateEventPage({
                       <Input
                         id="bookingCloseDate"
                         type="date"
-                        className={`pl-10 ${errors.bookingCloseDate ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                        className={`pl-10 theme-transition ${errors.bookingCloseDate ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                         {...register('bookingCloseDate')}
                         disabled={isSubmitting}
                       />
@@ -330,7 +330,7 @@ export function CreateEventPage({
                       <Input
                         id="bookingCloseTime"
                         type="time"
-                        className={`pl-10 ${errors.bookingCloseTime ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                        className={`pl-10 theme-transition ${errors.bookingCloseTime ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                         {...register('bookingCloseTime')}
                         disabled={isSubmitting}
                       />
@@ -345,7 +345,7 @@ export function CreateEventPage({
           </Card>
 
           {/* Set Category */}
-          <Card>
+          <Card className="shadow-theme">
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center space-x-2">
@@ -357,7 +357,7 @@ export function CreateEventPage({
                   variant="outline"
                   size="sm"
                   onClick={addCategory}
-                  className="text-green-600 border-green-600 hover:bg-green-50"
+                  className="text-green-600 border-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
                 >
                   <Plus className="w-4 h-4 mr-2" />
                   Add Category
@@ -367,7 +367,7 @@ export function CreateEventPage({
             <CardContent>
               <div className="space-y-4">
                 {/* Category Table Header */}
-                <div className="grid grid-cols-12 gap-4 p-3 bg-gray-50 rounded-lg text-sm font-medium text-gray-700">
+                <div className="grid grid-cols-12 gap-4 p-3 bg-muted/50 rounded-lg text-sm font-medium text-foreground">
                   <div className="col-span-3">Category</div>
                   <div className="col-span-2">Type Class</div>
                   <div className="col-span-3">Class Name</div>
@@ -377,14 +377,14 @@ export function CreateEventPage({
 
                 {/* Category Rows */}
                 {categories.map((category) => (
-                  <div key={category.id} className="grid grid-cols-12 gap-4 p-3 border border-gray-200 rounded-lg">
+                  <div key={category.id} className="grid grid-cols-12 gap-4 p-3 border border-border rounded-lg">
                     {/* Category */}
                     <div className="col-span-3">
                       <Select 
                         value={category.category} 
                         onValueChange={(value) => updateCategory(category.id, 'category', value)}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="theme-transition">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -402,7 +402,7 @@ export function CreateEventPage({
                         value={category.typeClass} 
                         onValueChange={(value) => updateCategory(category.id, 'typeClass', value)}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="theme-transition">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -420,7 +420,7 @@ export function CreateEventPage({
                         value={category.className} 
                         onValueChange={(value) => updateCategory(category.id, 'className', value)}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="theme-transition">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -437,7 +437,7 @@ export function CreateEventPage({
                         value={category.distance} 
                         onValueChange={(value) => updateCategory(category.id, 'distance', value)}
                       >
-                        <SelectTrigger>
+                        <SelectTrigger className="theme-transition">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -457,7 +457,7 @@ export function CreateEventPage({
                         size="sm"
                         onClick={() => removeCategory(category.id)}
                         disabled={categories.length <= 1}
-                        className="text-red-600 border-red-300 hover:bg-red-50 p-2"
+                        className="text-red-600 border-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 p-2"
                       >
                         <Minus className="w-4 h-4" />
                       </Button>
@@ -469,7 +469,7 @@ export function CreateEventPage({
           </Card>
 
           {/* Delegation Type */}
-          <Card>
+          <Card className="shadow-theme">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Users className="w-5 h-5" />
@@ -487,12 +487,12 @@ export function CreateEventPage({
                   }}
                   className={`p-4 border-2 rounded-lg text-center transition-colors ${
                     delegationType === 'open'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border hover:border-border/80 bg-background'
                   }`}
                 >
                   <div className="font-medium">Open</div>
-                  <div className="text-sm text-gray-600 mt-1">
+                  <div className="text-sm text-muted-foreground mt-1">
                     Participants can freely enter names
                   </div>
                 </button>
@@ -505,20 +505,20 @@ export function CreateEventPage({
                   }}
                   className={`p-4 border-2 rounded-lg text-center transition-colors ${
                     delegationType === 'selected'
-                      ? 'border-blue-500 bg-blue-50 text-blue-700'
-                      : 'border-gray-200 hover:border-gray-300'
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border hover:border-border/80 bg-background'
                   }`}
                 >
                   <div className="font-medium">Selected</div>
-                  <div className="text-sm text-gray-600 mt-1">
+                  <div className="text-sm text-muted-foreground mt-1">
                     Choose from predefined options
                   </div>
                 </button>
               </div>
 
               {/* Additional Info */}
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-                <p className="text-sm text-gray-700">
+              <div className="bg-primary/5 border border-primary/20 rounded-lg p-4">
+                <p className="text-sm text-foreground">
                   *You can set the content type to 'Open', allowing participants to freely enter names like country, club, or school, 
                   or 'Selected', where participants choose from predefined options such as a specific club or schools.
                 </p>
@@ -531,7 +531,7 @@ export function CreateEventPage({
                     Tipe Seleksi
                   </Label>
                   <Select value={watch('selectType')} onValueChange={(value) => setValue('selectType', value)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="theme-transition">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -545,7 +545,7 @@ export function CreateEventPage({
           </Card>
 
           {/* Competition Rules */}
-          <Card>
+          <Card className="shadow-theme">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Trophy className="w-5 h-5" />
@@ -555,12 +555,12 @@ export function CreateEventPage({
             <CardContent className="space-y-6">
               {/* Competition Rules */}
               <div className="space-y-4">
-                <h4 className="font-medium text-gray-900">Aturan Pertandingan Panahan</h4>
+                <h4 className="font-medium text-foreground">Aturan Pertandingan Panahan</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Jenis Pertandingan</Label>
                     <Select defaultValue="kualifikasi-eliminasi">
-                      <SelectTrigger>
+                      <SelectTrigger className="theme-transition">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -574,7 +574,7 @@ export function CreateEventPage({
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Jumlah Arrow per End</Label>
                     <Select defaultValue="6">
-                      <SelectTrigger>
+                      <SelectTrigger className="theme-transition">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -587,7 +587,7 @@ export function CreateEventPage({
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Jumlah End Kualifikasi</Label>
                     <Select defaultValue="12">
-                      <SelectTrigger>
+                      <SelectTrigger className="theme-transition">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -601,7 +601,7 @@ export function CreateEventPage({
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Target Face</Label>
                     <Select defaultValue="10-ring">
-                      <SelectTrigger>
+                      <SelectTrigger className="theme-transition">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -615,12 +615,12 @@ export function CreateEventPage({
 
               {/* Club Ranking Rules */}
               <div className="space-y-4">
-                <h4 className="font-medium text-gray-900">Aturan Pemeringkatan Klub</h4>
+                <h4 className="font-medium text-foreground">Aturan Pemeringkatan Klub</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Sistem Pemeringkatan</Label>
                     <Select defaultValue="medal-count">
-                      <SelectTrigger>
+                      <SelectTrigger className="theme-transition">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -634,7 +634,7 @@ export function CreateEventPage({
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Minimum Peserta per Klub</Label>
                     <Select defaultValue="3">
-                      <SelectTrigger>
+                      <SelectTrigger className="theme-transition">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -656,7 +656,7 @@ export function CreateEventPage({
               variant="outline"
               onClick={onBack}
               disabled={isSubmitting}
-              className="px-6"
+              className="px-6 hover-bg"
             >
               <ChevronLeft className="w-4 h-4 mr-2" />
               Batal
@@ -664,11 +664,11 @@ export function CreateEventPage({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 bg-blue-600 hover:bg-blue-700"
+              className="px-6 bg-primary hover:bg-primary/90"
             >
               {isSubmitting ? (
                 <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  <div className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2" />
                   Menyimpan...
                 </>
               ) : (

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { useToast } from '@/components/ui/use-toast';
 import { Lock, Mail, Eye, EyeOff, Loader2, Target } from 'lucide-react';
 
@@ -80,21 +81,26 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center theme-transition">
+      {/* Theme Toggle - Fixed Position */}
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       {/* Use consistent padding pattern */}
       <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-6 sm:py-8">
         <div className="max-w-md mx-auto space-y-6">
           {/* Header */}
           <div className="text-center space-y-2">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg">
-              <Target className="w-8 h-8 text-white" />
+            <div className="mx-auto w-16 h-16 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center shadow-theme-lg">
+              <Target className="w-8 h-8 text-primary-foreground" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Welcome Back</h1>
-            <p className="text-gray-600">Sign in to your MyArchery.id account</p>
+            <h1 className="text-2xl font-bold text-foreground">Welcome Back</h1>
+            <p className="text-muted-foreground">Sign in to your MyArchery.id account</p>
           </div>
 
           {/* Login Card */}
-          <Card className="shadow-xl border-0">
+          <Card className="shadow-theme-xl border-0 glass">
             <CardHeader className="space-y-1 pb-4">
               <CardTitle className="text-xl text-center">Sign In</CardTitle>
               <CardDescription className="text-center">
@@ -105,7 +111,7 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
             <CardContent className="space-y-4">
               {/* Error Alert */}
               {errors.root && (
-                <Alert variant="destructive">
+                <Alert variant="destructive" className="theme-transition">
                   <AlertDescription>{errors.root.message}</AlertDescription>
                 </Alert>
               )}
@@ -117,12 +123,12 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
                     Email Address
                   </Label>
                   <div className="relative">
-                    <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="email"
                       type="email"
                       placeholder="Enter your email"
-                      className={`pl-10 ${errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      className={`pl-10 theme-transition ${errors.email ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                       {...register('email')}
                       disabled={isLoading}
                     />
@@ -138,19 +144,19 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
                     Password
                   </Label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                     <Input
                       id="password"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Enter your password"
-                      className={`pl-10 pr-10 ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                      className={`pl-10 pr-10 theme-transition ${errors.password ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                       {...register('password')}
                       disabled={isLoading}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-gray-400 hover:text-gray-600 transition-colors"
+                      className="absolute right-3 top-3 text-muted-foreground hover:text-foreground transition-colors"
                       disabled={isLoading}
                     >
                       {showPassword ? (
@@ -170,11 +176,11 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
                   <input
                     type="checkbox"
                     id="rememberMe"
-                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                    className="h-4 w-4 rounded border-input text-primary focus:ring-primary theme-transition"
                     {...register('rememberMe')}
                     disabled={isLoading}
                   />
-                  <Label htmlFor="rememberMe" className="text-sm text-gray-700">
+                  <Label htmlFor="rememberMe" className="text-sm text-muted-foreground">
                     Remember me for 30 days
                   </Label>
                 </div>
@@ -182,7 +188,7 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
                 {/* Login Button */}
                 <Button
                   type="submit"
-                  className="w-full"
+                  className="w-full theme-transition"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -200,7 +206,7 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
                   <Button
                     type="button"
                     variant="link"
-                    className="text-sm text-muted-foreground hover:text-primary p-0"
+                    className="text-sm text-muted-foreground hover:text-primary p-0 theme-transition"
                     disabled={isLoading}
                   >
                     Forgot your password?
@@ -212,11 +218,11 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
 
           {/* Sign Up Link */}
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-muted-foreground">
               Don't have an account?{' '}
               <Button
                 variant="link"
-                className="text-primary hover:text-primary/80 p-0 h-auto font-medium"
+                className="text-primary hover:text-primary/80 p-0 h-auto font-medium theme-transition"
               >
                 Create account
               </Button>
@@ -224,12 +230,12 @@ export function LoginPage({ onLogin }: Readonly<LoginPageProps>) {
           </div>
 
           {/* Demo Credentials */}
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-primary/5 border-primary/20 glass">
             <CardContent className="pt-4">
               <div className="text-center space-y-1">
-                <p className="text-xs font-medium text-blue-800">Demo Credentials</p>
-                <p className="text-xs text-blue-600">Email: admin@myarchery.id</p>
-                <p className="text-xs text-blue-600">Password: password123</p>
+                <p className="text-xs font-medium text-primary">Demo Credentials</p>
+                <p className="text-xs text-muted-foreground">Email: admin@myarchery.id</p>
+                <p className="text-xs text-muted-foreground">Password: password123</p>
               </div>
             </CardContent>
           </Card>
