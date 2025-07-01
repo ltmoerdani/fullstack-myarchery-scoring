@@ -2,14 +2,9 @@ import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ThemeToggle } from '@/components/ui/theme-toggle';
-import { 
-  Target,
-  User,
-  LogOut,
-  ArrowLeft,
-  Download
-} from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
+import { PageHeader } from '@/components/common/PageHeader';
+import { PageFooter } from '@/components/common/PageFooter';
 
 interface ParticipantDetailsProps {
   onBack: () => void;
@@ -223,47 +218,12 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
 
   return (
     <div className="min-h-screen w-full content-bg flex flex-col theme-transition">
-      {/* Sticky Header */}
-      <header className="header-bg sticky top-0 z-50 w-full backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-4 flex items-center justify-between">
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary rounded-lg flex items-center justify-center">
-              <Target className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
-            </div>
-            <span className="text-lg sm:text-xl font-bold text-foreground">myarchery.id</span>
-          </div>
-          
-          <div className="flex items-center space-x-2 sm:space-x-4">
-            <ThemeToggle />
-            
-            <div className="flex items-center space-x-2 text-muted-foreground">
-              <User className="w-4 h-4" />
-              <span className="text-sm hidden sm:inline">Pro Archery</span>
-            </div>
-            
-            <Button variant="ghost" size="sm" className="text-muted-foreground p-2 hover:text-destructive transition-colors hover-bg">
-              <LogOut className="w-4 h-4" />
-              <span className="hidden md:inline ml-2">Logout</span>
-            </Button>
-          </div>
-        </div>
-      </header>
+      <PageHeader title="Peserta Individu" showBackButton onBack={onBack} />
 
       {/* Main Content */}
       <main className="flex-1 w-full px-4 sm:px-6 md:px-8 lg:px-[140px] py-6 sm:py-8">
-        {/* Page Header */}
-        <div className="mb-6">
-          <div className="flex items-center space-x-3 mb-4">
-            <Button 
-              variant="ghost" 
-              onClick={onBack}
-              className="flex items-center space-x-2 text-muted-foreground hover:text-foreground p-0 hover-bg"
-            >
-              <ArrowLeft className="w-4 h-4" />
-            </Button>
-            <h1 className="text-xl sm:text-2xl font-semibold text-foreground">Peserta Individu</h1>
-          </div>
-        </div>
+        {/* Page Title already in header; optional extra spacing */}
+        <div className="mb-4" />
 
         {/* Category Tabs */}
         <div className="mb-6">
@@ -464,14 +424,7 @@ export function ParticipantDetails({ onBack }: ParticipantDetailsProps) {
         </Card>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full bg-card border-t border-border py-4 sm:py-6 mt-auto theme-transition">
-        <div className="w-full px-4 sm:px-6 md:px-8 lg:px-[140px] text-center">
-          <p className="text-xs sm:text-sm text-muted-foreground">
-            2025 © MyArchery. Designed & Developed by Reka Cipta Digital
-          </p>
-        </div>
-      </footer>
+      <PageFooter />
     </div>
   );
 }
