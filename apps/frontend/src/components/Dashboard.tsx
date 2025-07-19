@@ -235,7 +235,7 @@ export function Dashboard(props: Readonly<DashboardProps>) {
                   </div>
                   
                   {/* Event Title */}
-                  <h3 className="font-semibold text-foreground mb-3 sm:mb-4 line-clamp-2 leading-tight text-sm sm:text-base text-primary">
+                  <h3 className="font-semibold text-foreground mb-3 sm:mb-4 line-clamp-2 leading-tight text-sm sm:text-base">
                     {event.title}
                   </h3>
                   
